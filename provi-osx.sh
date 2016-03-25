@@ -68,11 +68,13 @@ install_iZotope() {
 
 #PodFarm
 install_podfarm() {
-  dmg_file="$serverdata/Line6/POD Farm 2.56.dmg"
+  dmg_file="$serverdata/Line6/PODFarm2.58.dmg"
+  echo "$dmg_file"
   mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
   pkg_file="$mount_dir/POD Farm 2.pkg"
   sudo installer -pkg "$pkg_file" -target /
   hdiutil detach "$mount_dir"
+  sudo cp -rvp $serverdata/Line6/crack/L6TWXY.framework /Library/Frameworks
 }
 
 install_podfarm
