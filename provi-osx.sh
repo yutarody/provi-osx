@@ -77,4 +77,45 @@ install_podfarm() {
   sudo cp -rvp $serverdata/Line6/crack/L6TWXY.framework /Library/Frameworks
 }
 
-install_podfarm
+#LiquidSonics
+install_LiquidSonics() {
+  pkg_file="$serverdata/LiquidSonics/*.pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+  #open $serverdata/LiquidSonics/crack/License.lic
+}
+
+#Pianoteq
+install_pianoteq() {
+  pkg_file="$serverdata/Modartt/Install Pianoteq 5 STAGE.app/Contents/Resources/Install Pianoteq 5 STAGE.mpkg"
+  sudo installer -pkg "$pkg_file" -target /
+}
+
+#NativeInstrumens
+install_NI() {
+  nipath="$serverdata/NativeInstruments"
+  #Preference Copy
+  sudo cp -v "$nipath/NI_Preference/"* '/Library/Preferences'
+  cp -v "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences'
+
+  #pkg install
+  pkg_file="$nipath/pkgs/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+
+  #ISO install
+  iso_file="$nioath/pkgs/*.iso"
+  for dmg_file in $iso_file
+  do
+    mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+    pkg_file="$mount_dir/*.pkg"
+    sudo installer -pkg "$pkg_file" -target /
+    hdiutil detach "$mount_dir"
+  done
+  rsync -avz "$nipath/Service Center" "/Users/yutaro/Library/Application Support/Native Instruments/Service Center"
+}
+install_NI
