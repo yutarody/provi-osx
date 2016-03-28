@@ -62,7 +62,7 @@ install_iZotope() {
   read wait
   sudo installer -pkg "$serverdata/iZotope/crack/Crack.mpkg" -target /
   sudo cp -pvr $serverdata/iZotope/crack/*.component $aupath/
-  sudo cp -pvr /usr/bin/ditto $serverdata/iZotope/crack/*.vst $VSTpath/
+  sudo cp -pvr $serverdata/iZotope/crack/*.vst $VSTpath/
   sudo cp -pvr $serverdata/iZotope/crack/*.vst3 $VST3path/
 }
 
@@ -75,4 +75,104 @@ install_podfarm() {
   hdiutil detach "$mount_dir"
 }
 
-install_podfarm
+
+#Nugen Audio
+install_nugensudio() {
+  pkg_file="$serverdata/nugenaudio/*.pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+}
+
+#overloud
+install_overloud() {
+  pkg_file="$serverdata/overloud/*.pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+
+  sudo cp -pvr $serverdata/overloud/crack/*.component $aupath/
+  sudo cp -pvr $serverdata/overloud/crack/*.vst $VSTpath/
+  sudo /usr/bin/ditto "$serverdata/overloud/crack/BREVERB 2.app" "/Applications/BREVERB 2.app"
+}
+
+#peavey
+install_peavey() {
+  pkg_file="$serverdata/nugenaudio/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+}
+
+#PluginAlliance
+install_PluginAlliance() {
+  sudo cp -pvr "$serverdata/PluginAlliance/AU/*" $aupath/
+  sudo cp -pvr "$serverdata/PluginAlliance/VST/*" $VSTpath/
+  sudo cp -pvr "$serverdata/PluginAlliance/VST2/*" $VST3path/
+  cp -pvr "$serverdata/PluginAlliance/Applications/Plugin Alliance" /Applications
+}
+
+#presonus
+install_presonus() {
+  dmg_file="$serverdata/presonus/PreSonus - Studio One 3 Professional v3.2.0.36707 OS X.dmg"
+  mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+  pkg_file="$mount_dir/Studio One 3.app"
+  open "$pkg_file"
+  hdiutil detach "$mount_dir"
+}
+
+#PSPaudioware
+install_psp() {
+  pkg_file="$serverdata/PSPaudioware/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+}
+
+#RedWirez
+install_redwirez() {
+  pkg_file="$serverdata/RedWirez/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+}
+
+#samplemagic
+install_samplemagic() {
+  dmg_file="$serverdata/samplemagic/MagicAB-AU.dmg"
+  for dmg_files in $dmg_file
+  do
+    mount_dir=`hdiutil attach "$dmg_files" | awk -F '\t' 'END{print $NF}'`
+    pkg_file="$mount_dir/Magic AB AU.component"
+    sudo cp -pvr $pkg_file $aupath/
+  done
+}
+
+#soundtoys
+install_soundtoys() {
+  pkg_file="$serverdata/soundtoys/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+}
+
+#Spectrasonics
+##trilian
+install_trilian() {
+  echo "Before install Trilian sounddata"
+  read wait
+  #install software
+  pkg_file="$serverdata/Spectrasonics/Trilian Software1.4.3d.pkg"
+  sudo installer -pkg "$pkg_file" -target /
+  #update Soundsource
+  pkg_file="$serverdata/Spectrasonics/Trilian_Soundsource_Library_Update_1_0_1/Mac/Trilian Soundsource Library.pkg"
+  sudo installer -pkg "$pkg_file" -target /
+  #update patch
+  pkg_file="$serverdata/Spectrasonics/Trilian_Patch_Library_Update_1_4_0/Mac/Trilian Patch Library.pkg"
+}
