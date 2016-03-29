@@ -205,10 +205,40 @@ install_soundtoys() {
   done
 }
 
+#ValhallaDSP
+install_valhallaDSP() {
+  sudo cp -pvr "$serverdata/PluginAlliance/AU/*.component" $aupath/
+  sudo cp -pvr "$serverdata/PluginAlliance/VST/*.vst" $VSTpath/
+  sudo rsync -avz "$serverdata/ValhallaDSP/Library/Audio/Presets/Valhalla DSP, LLC" /Library/Audio/Presets
+}
 
+#vocaloid
+install_vocaloid() {
+  #app installer
+  image_file="$serverdata/vocaloid/*.cdr"
+  for image_files in $image_file
+  do
+    mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
+    pkg_file=`find "$mount_dir" -name "*Installer.app"`
+    echo "$pkg_file"
+    open "$pkg_file"
+    echo 'Please Manual Install'
+    read wait
+    hdiutil detach "$mount_dir"
+  done
 
+  #pkg installer
+  image_file="$serverdata/vocaloid/*.dmg"
+  for image_files in $image_file
+  do
+    mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
+    pkg_file="$mount_dir/*.pkg"
+    sudo installer -pkg "$pkg_file" -target /
+    hdiutil detach "$mount_dir"
+  done
+}
 
-
+install_vocaloid
 
 #Spectrasonics
 ##trilian
