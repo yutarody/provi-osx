@@ -220,7 +220,6 @@ install_vocaloid() {
   do
     mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
     pkg_file=`find "$mount_dir" -name "*Installer.app"`
-    echo "$pkg_file"
     open "$pkg_file"
     echo 'Please Manual Install'
     read wait
@@ -238,7 +237,27 @@ install_vocaloid() {
   done
 }
 
-install_vocaloid
+#waves
+install_waves() {
+  #Install From Waves Central
+  open '/Applications/Waves Central.app'
+  echo "Please Manual Install"
+  read wait
+
+  #crack
+  image_file="$serverdata/waves/WavesLicenseEngine.dmg"
+  for image_files in $image_file
+  do
+    mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
+    pkg_file="$mount_dir/WavesLicenseEngine.pkg"
+    sudo installer -pkg "$pkg_file" -target /
+    hdiutil detach "$mount_dir"
+  done
+
+  open "/Applications/Waves/WaveShells V9/Waves AU Reg Utility 9.6.app"
+}
+
+install_waves
 
 #Spectrasonics
 ##trilian
