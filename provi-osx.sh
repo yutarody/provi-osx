@@ -152,9 +152,9 @@ install_peavey() {
 
 #PluginAlliance
 install_PluginAlliance() {
-  sudo cp -pvr "$serverdata/PluginAlliance/AU/*" $aupath/
-  sudo cp -pvr "$serverdata/PluginAlliance/VST/*" $VSTpath/
-  sudo cp -pvr "$serverdata/PluginAlliance/VST2/*" $VST3path/
+  sudo cp -pvr $serverdata/PluginAlliance/AU/* $aupath/
+  sudo cp -pvr $serverdata/PluginAlliance/VST/* $VSTpath/
+  sudo cp -pvr $serverdata/PluginAlliance/VST2/* $VST3path/
   cp -pvr "$serverdata/PluginAlliance/Applications/Plugin Alliance" /Applications
 }
 
@@ -205,10 +205,22 @@ install_soundtoys() {
   done
 }
 
+#steinberg cubase elements 8
+install_cubase() {
+  dmg_file="$serverdata/steinberg/Cubase 8 Elements/*.dmg"
+  for dmg_files in $dmg_file
+  do
+    mount_dir=`hdiutil attach "$dmg_files" | awk -F '\t' 'END{print $NF}'`
+    pkg_file="$mount_dir/Cubase LE AI Elements 8 for Mac OS X/Cubase LE AI Elements 8.pkg"
+    sudo installer -pkg "$pkg_files" -target /
+    hdiutil detach "$mount_dir"
+  done
+}
+
 #ValhallaDSP
 install_valhallaDSP() {
-  sudo cp -pvr "$serverdata/PluginAlliance/AU/*.component" $aupath/
-  sudo cp -pvr "$serverdata/PluginAlliance/VST/*.vst" $VSTpath/
+  sudo cp -pvr $serverdata/ValhallaDSP/*.component $aupath/
+  sudo cp -pvr $serverdata/ValhallaDSP/*.vst $VSTpath/
   sudo rsync -avz "$serverdata/ValhallaDSP/Library/Audio/Presets/Valhalla DSP, LLC" /Library/Audio/Presets
 }
 
@@ -257,12 +269,10 @@ install_waves() {
   open "/Applications/Waves/WaveShells V9/Waves AU Reg Utility 9.6.app"
 }
 
-install_waves
-
 #Spectrasonics
 ##trilian
 install_trilian() {
-  echo "Before install Trilian sounddata"
+  echo "Before Provisioning Trilian STEAM"
   read wait
   #install software
   pkg_file="$serverdata/Spectrasonics/Trilian Software1.4.3d.pkg"
@@ -272,4 +282,21 @@ install_trilian() {
   sudo installer -pkg "$pkg_file" -target /
   #update patch
   pkg_file="$serverdata/Spectrasonics/Trilian_Patch_Library_Update_1_4_0/Mac/Trilian Patch Library.pkg"
+}
+
+##Omnisphere 2
+install_omnisphere2() {
+  echo 'Before Provisioning Omnisphere 2 STEAM(Mout iso > copy STEAM Folder)'
+  read wait
+  #install software v2.0.3
+  pkg_file="$serverdata/Spectrasonics/Omnisphere2/01_Installer/Mac/Omnisphere 2 Installer.pkg"
+  sudo installer -pkg "$pkg_file" -target /
+  #update Soundsource
+  pkg_file="$serverdata/Spectrasonics/Omnisphere2/02_Data_Updater/Mac/Omnisphere_Data_Updater.pkg"
+  sudo installer -pkg "$pkg_file" -target /
+  #update patch
+  pkg_file="$serverdata/Spectrasonics/Omnisphere2/03_For_Trilian_Users/Mac/Trilian Patch Library Update.pkg"
+  #crack 2.0.3d
+  sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_crack/Omnisphere_2.0.3d/*.component $aupath/
+  sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_crack/Omnisphere_2.0.3d/*.vst $VSTpath/
 }
