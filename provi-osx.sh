@@ -207,15 +207,18 @@ install_soundtoys() {
 
 #steinberg cubase elements 8
 install_cubase() {
-  dmg_file="$serverdata/steinberg/Cubase 8 Elements/*.dmg"
+  dmg_file="$serverdata/steinberg/Cubase_8_Elements/*.dmg"
   for dmg_files in $dmg_file
   do
+    echo $dmg_files
     mount_dir=`hdiutil attach "$dmg_files" | awk -F '\t' 'END{print $NF}'`
     pkg_file="$mount_dir/Cubase LE AI Elements 8 for Mac OS X/Cubase LE AI Elements 8.pkg"
     sudo installer -pkg "$pkg_files" -target /
     hdiutil detach "$mount_dir"
   done
 }
+
+install_cubase
 
 #ValhallaDSP
 install_valhallaDSP() {
