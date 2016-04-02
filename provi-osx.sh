@@ -60,10 +60,10 @@ install_iZotope() {
   open "$serverdata/iZotope/Install iZotope Ozone 7 Advanced.app"
   echo "press any keys continue:"
   read wait
-  sudo installer -pkg "$serverdata/iZotope/crack/Crack.mpkg" -target /
-  sudo cp -pvr $serverdata/iZotope/crack/*.component $aupath/
-  sudo cp -pvr $serverdata/iZotope/crack/*.vst $VSTpath/
-  sudo cp -pvr $serverdata/iZotope/crack/*.vst3 $VST3path/
+  sudo installer -pkg "$serverdata/iZotope/etc/etc.mpkg" -target /
+  sudo cp -pvr $serverdata/iZotope/etc/*.component $aupath/
+  sudo cp -pvr $serverdata/iZotope/etc/*.vst $VSTpath/
+  sudo cp -pvr $serverdata/iZotope/etc/*.vst3 $VST3path/
 }
 
 #PodFarm
@@ -74,7 +74,7 @@ install_podfarm() {
   pkg_file="$mount_dir/POD Farm 2.pkg"
   sudo installer -pkg "$pkg_file" -target /
   hdiutil detach "$mount_dir"
-  sudo cp -rvp $serverdata/Line6/crack/L6TWXY.framework /Library/Frameworks
+  sudo cp -rvp $serverdata/Line6/etc/L6TWXY.framework /Library/Frameworks
 }
 
 #LiquidSonics
@@ -84,7 +84,7 @@ install_LiquidSonics() {
   do
     sudo installer -pkg "$pkg_files" -target /
   done
-  #open $serverdata/LiquidSonics/crack/License.lic
+  #open $serverdata/LiquidSonics/etc/License.lic
 }
 
 #Pianoteq
@@ -136,9 +136,9 @@ install_overloud() {
     sudo installer -pkg "$pkg_files" -target /
   done
 
-  sudo cp -pvr $serverdata/overloud/crack/*.component $aupath/
-  sudo cp -pvr $serverdata/overloud/crack/*.vst $VSTpath/
-  sudo /usr/bin/ditto "$serverdata/overloud/crack/BREVERB 2.app" "/Applications/BREVERB 2.app"
+  sudo cp -pvr $serverdata/overloud/etc/*.component $aupath/
+  sudo cp -pvr $serverdata/overloud/etc/*.vst $VSTpath/
+  sudo /usr/bin/ditto "$serverdata/overloud/etc/BREVERB 2.app" "/Applications/BREVERB 2.app"
 }
 
 #peavey
@@ -259,7 +259,7 @@ install_waves() {
   echo "Please Manual Install"
   read wait
 
-  #crack
+  #etc
   image_file="$serverdata/waves/WavesLicenseEngine.dmg"
   for image_files in $image_file
   do
@@ -299,7 +299,7 @@ install_omnisphere2() {
   sudo installer -pkg "$pkg_file" -target /
   #update patch
   pkg_file="$serverdata/Spectrasonics/Omnisphere2/03_For_Trilian_Users/Mac/Trilian Patch Library Update.pkg"
-  #crack 2.0.3d
-  sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_crack/Omnisphere_2.0.3d/*.component $aupath/
-  sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_crack/Omnisphere_2.0.3d/*.vst $VSTpath/
+  #etc 2.0.3d
+  sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_etc/Omnisphere_2.0.3d/*.component $aupath/
+  sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_etc/Omnisphere_2.0.3d/*.vst $VSTpath/
 }
