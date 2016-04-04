@@ -1,10 +1,23 @@
 #!/bin/sh
 
-serverdata='/Volumes/Data/Appz/DAW'
+#init directory
 mkdir -p ~/.temp
+mkdir -p ~/.repos
 tmp='/Users/yutaro/.temp'
+repos='Users/yutaro/.repos'
 
-#dmg>app install_dmg_app $PATH $APP
+#NAS Mount CHk
+MOUNT_CHECK=`df | grep /Volumes/Data$  | wc -l`
+if [[ $MOUNT_CHECK -eq 0 ]]; then
+  echo 'Enter Password:'
+  read ans
+  mount_afp "afp://yutaro:$ans@192.168.1.1/Data" /Volumes/Data
+fi
+
+#Server path
+serverdata='/Volumes/Data/Appz/DAW'
+
+#dmg>app install_dmg_app $PATH $APPNAME
 install_dmg_app() {
   dmg_file="$serverdata/$1"
   rync -avz $dmg_file $tmp
