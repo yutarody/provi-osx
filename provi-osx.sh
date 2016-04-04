@@ -1,13 +1,28 @@
 #!/bin/sh
 
-#rootで実行
+#root
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+#init directory
+mkdir -p ~/.temp
+mkdir -p ~/.repos
+tmp='/Users/yutaro/.temp'
+repos='Users/yutaro/.repos'
+
+#NAS Mount CHk
+MOUNT_CHECK=`df | grep /Volumes/Data$  | wc -l`
+if [[ $MOUNT_CHECK -eq 0 ]]; then
+  echo 'Enter Password:'
+  read ans
+  mkdir /Volumes/Data
+  mount_afp "afp://yutaro:$ans@192.168.1.1/Data" /Volumes/Data
+fi
+#Server path
+serverdata='/Volumes/Data/Appz/DAW'
+
 #DAW
 
-#Serverパス
-serverdata='/Volumes/Data/Appz/DAW'
 #plug-in directory
 ##AU
 aupath='/Library/Audio/Plug-Ins/Components'
@@ -89,22 +104,27 @@ install_LiquidSonics() {
 
 #Pianoteq
 install_pianoteq() {
-  pkg_file="$serverdata/Modartt/Install Pianoteq 5 STAGE.app/Contents/Resources/Install Pianoteq 5 STAGE.mpkg"
-  sudo installer -pkg "$pkg_file" -target /
+  pkg_file="$serverdata/Modartt/Install Pianoteq 5 STAGE.app"
+  open "$pkg_file"
+  echo "Please Manual Install:"
+  read wait
 }
 
 #NativeInstrumens
 install_NI() {
   nipath="$serverdata/NativeInstruments"
   #Preference Copy
-  sudo cp -v "$nipath/NI_Preference/"* '/Library/Preferences'
-  cp -v "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences'
+  sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences'
+  rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences'
+  #mkdir
+  mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger}
 
   #pkg install
   pkg_file="$nipath/pkgs/*pkg"
   for pkg_files in $pkg_file
   do
     sudo installer -pkg "$pkg_files" -target /
+    read wait
   done
 
   #ISO install
@@ -143,7 +163,7 @@ install_overloud() {
 
 #peavey
 install_peavey() {
-  pkg_file="$serverdata/nugenaudio/*pkg"
+  pkg_file="$serverdata/peavey/*pkg"
   for pkg_files in $pkg_file
   do
     sudo installer -pkg "$pkg_files" -target /
@@ -162,8 +182,7 @@ install_PluginAlliance() {
 install_presonus() {
   dmg_file="$serverdata/presonus/PreSonus - Studio One 3 Professional v3.2.0.36707 OS X.dmg"
   mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
-  pkg_file="$mount_dir/Studio One 3.app"
-  open "$pkg_file"
+  sudo /usr/bin/ditto "$mount_dir/Studio One 3.app" "/Applications/Studio One 3.app"
   hdiutil detach "$mount_dir"
 }
 
@@ -192,7 +211,8 @@ install_samplemagic() {
   do
     mount_dir=`hdiutil attach "$dmg_files" | awk -F '\t' 'END{print $NF}'`
     pkg_file="$mount_dir/Magic AB AU.component"
-    sudo cp -pvr $pkg_file $aupath/
+    sudo cp -pvr "$pkg_file" $aupath/
+    hdiutil detach "$mount_dir"
   done
 }
 
@@ -210,15 +230,19 @@ install_cubase() {
   dmg_file="$serverdata/steinberg/Cubase_8_Elements/*.dmg"
   for dmg_files in $dmg_file
   do
-    echo $dmg_files
     mount_dir=`hdiutil attach "$dmg_files" | awk -F '\t' 'END{print $NF}'`
-    pkg_file="$mount_dir/Cubase LE AI Elements 8 for Mac OS X/Cubase LE AI Elements 8.pkg"
-    sudo installer -pkg "$pkg_files" -target /
+    echo $mount_dir
+    if [[ $mount_dir == '/Volumes/License' ]]; then
+      echo "Manual Run Steinberg.command:Important!!!After Run SO match High CPU Usage!!!"
+      #open $mount_dir/Steinberg.command
+    else
+      pkg_file="$mount_dir/Cubase LE AI Elements 8 for Mac OS X/Cubase LE AI Elements 8.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+    fi
+
     hdiutil detach "$mount_dir"
   done
 }
-
-install_cubase
 
 #ValhallaDSP
 install_valhallaDSP() {
@@ -234,10 +258,43 @@ install_vocaloid() {
   for image_files in $image_file
   do
     mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
-    pkg_file=`find "$mount_dir" -name "*Installer.app"`
-    open "$pkg_file"
-    echo 'Please Manual Install'
-    read wait
+
+    #japanese
+    if [[ $mount_dir == '/Volumes/HATSUNE MIKU V3 Mac' ]]; then
+      #Original
+      pkg_file="$mount_dir/SOFTWARE/MIKU_V3_Original/MIKU V3 Original Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+      #Dark
+      pkg_file="$mount_dir/SOFTWARE/MIKU_V3_Dark/MIKU V3 Dark Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+      #Soft
+      pkg_file="$mount_dir/SOFTWARE/MIKU_V3_Soft/MIKU V3 Soft Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+      #Solid
+      pkg_file="$mount_dir/SOFTWARE/MIKU_V3_Solid/MIKU V3 Solid Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+      #Sweet
+      pkg_file="$mount_dir/SOFTWARE/MIKU_V3_Sweet/MIKU V3 Sweet Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+      #Piapro
+      pkg_file="$mount_dir/SOFTWARE/Piapro_Studio/Piapro Studio Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+      #vocaloid API
+      pkg_file="$mount_dir/SOFTWARE/API_Mac_V3_0_1_14/VOCALOID API V3.0.1.14 Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+
+    #english
+    else
+      pkg_file="$mount_dir/Mac/SOFTWARE/MIKU_V3_English/MIKU V3 English Installer.pkg"
+      sudo installer -pkg "$pkg_file" -target /
+    fi
+
     hdiutil detach "$mount_dir"
   done
 
@@ -246,19 +303,28 @@ install_vocaloid() {
   for image_files in $image_file
   do
     mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
-    pkg_file="$mount_dir/*.pkg"
+    #echo $mount_dir
+    pkg_file=`sudo find "$mount_dir" -name "*.pkg"`
+    #echo $pkg_file
     sudo installer -pkg "$pkg_file" -target /
     hdiutil detach "$mount_dir"
   done
+
+  #piapro studio update
+  open "$serverdata/vocaloid/piaprostudio_updater_v2039_Mac/Update.app"
 }
 
 #waves
 install_waves() {
   #Install From Waves Central
-  open '/Applications/Waves Central.app'
-  echo "Please Manual Install"
-  read wait
-
+    open '/Applications/Waves Central.app'
+    echo "Please Manual Install
+          - Mercury
+          - Abbey Road Collection
+          - SSL 4000 Collection
+          - GTR Solo (Optional. Full GTR is included in Mercury)
+          - WavesTune LT (Optional. Full WavesTune is included in Mercury)"
+    read wait
   #etc
   image_file="$serverdata/waves/WavesLicenseEngine.dmg"
   for image_files in $image_file
@@ -268,28 +334,28 @@ install_waves() {
     sudo installer -pkg "$pkg_file" -target /
     hdiutil detach "$mount_dir"
   done
-
   open "/Applications/Waves/WaveShells V9/Waves AU Reg Utility 9.6.app"
 }
 
 #Spectrasonics
 ##trilian
 install_trilian() {
-  echo "Before Provisioning Trilian STEAM"
-  read wait
   #install software
   pkg_file="$serverdata/Spectrasonics/Trilian Software1.4.3d.pkg"
   sudo installer -pkg "$pkg_file" -target /
+  echo "Before Provisioning Trilian"
+  read wait
   #update Soundsource
   pkg_file="$serverdata/Spectrasonics/Trilian_Soundsource_Library_Update_1_0_1/Mac/Trilian Soundsource Library.pkg"
   sudo installer -pkg "$pkg_file" -target /
   #update patch
   pkg_file="$serverdata/Spectrasonics/Trilian_Patch_Library_Update_1_4_0/Mac/Trilian Patch Library.pkg"
+  sudo installer -pkg "$pkg_file" -target /
 }
 
 ##Omnisphere 2
 install_omnisphere2() {
-  echo 'Before Provisioning Omnisphere 2 STEAM(Mout iso > copy STEAM Folder)'
+  echo 'Before Provisioning Omnisphere 2'
   read wait
   #install software v2.0.3
   pkg_file="$serverdata/Spectrasonics/Omnisphere2/01_Installer/Mac/Omnisphere 2 Installer.pkg"
@@ -303,3 +369,28 @@ install_omnisphere2() {
   sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_etc/Omnisphere_2.0.3d/*.component $aupath/
   sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_etc/Omnisphere_2.0.3d/*.vst $VSTpath/
 }
+
+#install_logic
+#install_bias
+#install_bozdigital
+#install_effectrix
+#install_iZotope
+#install_podfarm
+#install_LiquidSonics
+#install_pianoteq
+install_NI
+#install_nugensudio
+#install_overloud
+#install_peavey
+#install_PluginAlliance
+#install_presonus
+#install_psp
+#install_redwirez
+#install_samplemagic
+#install_soundtoys
+#install_cubase
+#install_valhallaDSP
+#install_vocaloid
+#install_waves
+#install_trilian
+#install_omnisphere2
