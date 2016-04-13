@@ -21,6 +21,11 @@ fi
 #Server path
 serverdata='/Volumes/Data/Appz/DAW'
 
+#defaults set
+#brewfile
+#dotsfiles
+#update hosts
+
 #DAW
 
 #plug-in directory
@@ -145,7 +150,7 @@ install_peavey() {
 install_PluginAlliance() {
   sudo cp -pvr $serverdata/PluginAlliance/AU/* $aupath/
   sudo cp -pvr $serverdata/PluginAlliance/VST/* $VSTpath/
-  sudo cp -pvr $serverdata/PluginAlliance/VST2/* $VST3path/
+  sudo cp -pvr $serverdata/PluginAlliance/VST3/* $VST3path/
   cp -pvr "$serverdata/PluginAlliance/Applications/Plugin Alliance" /Applications
 }
 
@@ -354,29 +359,65 @@ install_omnisphere2() {
 install_NI() {
   nipath="$serverdata/NativeInstruments"
   #Preference Copy
-  sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences'
-  rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences'
+  sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences/'
+  rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences/'
   #mkdir
-  mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger}
+  sudo mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,Enhanced\ EQ,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,Passive\ EQ,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger,Supercharger\ GT,Transient\ Master\ FX,VC\ 160\ FX,VC\ 2A\ FX,VC\ 76\ FX,Vari\ Comp}
+
+  #for massive,Battery
+  sudo mkdir /Applications/Native\ Instruments/Massive/Battery 4.app
+  sudo mkdir /Applications/Native\ Instruments/Massive/Massive.app
 
   #pkg install
-  pkg_file="$nipath/pkgs/*pkg"
+  rsync -av $nipath/pkgs/ $tmp
+  pkg_file="$tmp/*pkg"
   for pkg_files in $pkg_file
   do
-    sudo installer -pkg "$pkg_files" -target /
+    rsync -av "$pkg_files"
+    open "$pkg_files"
+    echo 'Manual Install'
     read wait
   done
 
-  #ISO install
-  iso_file="$nioath/pkgs/*.iso"
+  #reaktor install
+  iso_file="$nipath/reaktor/*.iso"
   for dmg_file in $iso_file
   do
     mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
-    pkg_file="$mount_dir/*.pkg"
-    sudo installer -pkg "$pkg_file" -target /
+    sudo installer -pkg "$mount_dir"/*Mac.pkg -target /
     hdiutil detach "$mount_dir"
   done
+
+  #reaktor pkg
+  pkg_file="$nipath/reaktor/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+
+  done
+
+#    read wait
+
+  #reaktor update
+  pkg_file="$nipath/reaktor/update/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+  done
+
   rsync -avz "$nipath/Service Center" "/Users/yutaro/Library/Application Support/Native Instruments/Service Center"
+
+  #etc plug-in
+  sudo rsync -av $nipath/etc/AU/ $aupath/
+  sudo rsync -av $nipath/etc//VST/ $VSTpath/
+
+  #etc app
+  sudo rsync -av "$nipath/etc/app/Battery 4.app" '/Applications/Native Instruments/Battery 4/'
+  sudo rsync -av "$nipath/etc/app/FM8.app" '/Applications/Native Instruments/FM8/'
+  sudo rsync -av "$nipath/etc/app/Guitar Rig 5.app" '/Applications/Native Instruments/Guitar Rig 5/'
+  sudo rsync -av "$nipath/etc/app/Kontakt 5.app" '/Applications/Native Instruments/Kontakt 5/'
+  sudo rsync -av "$nipath/etc/app/Massive.app" '/Applications/Native Instruments/Massive/'
+  sudo rsync -av "$nipath/etc/app/Reaktor 6.app" '/Applications/Native Instruments/Reaktor 6/'
 }
 
 #install_logic
@@ -404,3 +445,5 @@ install_NI() {
 #install_trilian
 #install_omnisphere2
 #install_NI
+
+#rm -d $tmp
