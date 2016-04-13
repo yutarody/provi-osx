@@ -314,6 +314,15 @@ install_vocaloid() {
   open "$serverdata/vocaloid/piaprostudio_updater_v2039_Mac/Update.app"
 }
 
+#vocaloid for cubase neo
+install_vocaloidforcubase() {
+  dmg_file="$serverdata/yamaha/Vocaloid for Cubase.cdr"
+  mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+  pkg_file="$mount_dir/VOCALOID Editor for Cubase Installer.pkg"
+  sudo installer -pkg "$pkg_file" -target /
+  hdiutil detach "$mount_dir"
+}
+
 #waves
 install_waves() {
   #Install From Waves Central
@@ -378,7 +387,7 @@ install_omnisphere2() {
 #install_podfarm
 #install_LiquidSonics
 #install_pianoteq
-install_NI
+#install_NI
 #install_nugensudio
 #install_overloud
 #install_peavey
@@ -391,6 +400,7 @@ install_NI
 #install_cubase
 #install_valhallaDSP
 #install_vocaloid
+install_vocaloidforcubase
 #install_waves
 #install_trilian
 #install_omnisphere2
