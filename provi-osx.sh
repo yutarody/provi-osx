@@ -110,35 +110,6 @@ install_pianoteq() {
   read wait
 }
 
-#NativeInstrumens
-install_NI() {
-  nipath="$serverdata/NativeInstruments"
-  #Preference Copy
-  sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences'
-  rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences'
-  #mkdir
-  mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger}
-
-  #pkg install
-  pkg_file="$nipath/pkgs/*pkg"
-  for pkg_files in $pkg_file
-  do
-    sudo installer -pkg "$pkg_files" -target /
-    read wait
-  done
-
-  #ISO install
-  iso_file="$nioath/pkgs/*.iso"
-  for dmg_file in $iso_file
-  do
-    mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
-    pkg_file="$mount_dir/*.pkg"
-    sudo installer -pkg "$pkg_file" -target /
-    hdiutil detach "$mount_dir"
-  done
-  rsync -avz "$nipath/Service Center" "/Users/yutaro/Library/Application Support/Native Instruments/Service Center"
-}
-
 #Nugen Audio
 install_nugensudio() {
   pkg_file="$serverdata/nugenaudio/*.pkg"
@@ -379,6 +350,35 @@ install_omnisphere2() {
   sudo cp -pvr $serverdata/Spectrasonics/Omnisphere2/05_etc/Omnisphere_2.0.3d/*.vst $VSTpath/
 }
 
+#NativeInstrumens
+install_NI() {
+  nipath="$serverdata/NativeInstruments"
+  #Preference Copy
+  sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences'
+  rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences'
+  #mkdir
+  mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger}
+
+  #pkg install
+  pkg_file="$nipath/pkgs/*pkg"
+  for pkg_files in $pkg_file
+  do
+    sudo installer -pkg "$pkg_files" -target /
+    read wait
+  done
+
+  #ISO install
+  iso_file="$nioath/pkgs/*.iso"
+  for dmg_file in $iso_file
+  do
+    mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+    pkg_file="$mount_dir/*.pkg"
+    sudo installer -pkg "$pkg_file" -target /
+    hdiutil detach "$mount_dir"
+  done
+  rsync -avz "$nipath/Service Center" "/Users/yutaro/Library/Application Support/Native Instruments/Service Center"
+}
+
 #install_logic
 #install_bias
 #install_bozdigital
@@ -387,7 +387,6 @@ install_omnisphere2() {
 #install_podfarm
 #install_LiquidSonics
 #install_pianoteq
-#install_NI
 #install_nugensudio
 #install_overloud
 #install_peavey
@@ -400,7 +399,8 @@ install_omnisphere2() {
 #install_cubase
 #install_valhallaDSP
 #install_vocaloid
-install_vocaloidforcubase
+#install_vocaloidforcubase
 #install_waves
 #install_trilian
 #install_omnisphere2
+#install_NI
