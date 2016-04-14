@@ -18,13 +18,18 @@ if [[ $MOUNT_CHECK -eq 0 ]]; then
   mkdir /Volumes/Data
   mount_afp "afp://yutaro:$ans@192.168.1.1/Data" /Volumes/Data
 fi
+
 #Server path
 serverdata='/Volumes/Data/Appz/DAW'
 
 #defaults set
+
 #brewfile
+
 #dotsfiles
+
 #update hosts
+
 
 #DAW
 
