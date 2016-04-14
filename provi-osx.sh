@@ -360,7 +360,7 @@ install_NI() {
   nipath="$serverdata/NativeInstruments"
   #Preference Copy
   sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences/'
-  rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences/'
+  #rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences/'
   #mkdir
   sudo mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,Enhanced\ EQ,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,Passive\ EQ,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger,Supercharger\ GT,Transient\ Master\ FX,VC\ 160\ FX,VC\ 2A\ FX,VC\ 76\ FX,Vari\ Comp}
 
