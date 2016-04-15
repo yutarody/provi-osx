@@ -22,17 +22,7 @@ fi
 #Server path
 serverdata='/Volumes/Data/Appz/DAW'
 
-#defaults set
-
-#brewfile
-
-#dotsfiles
-
-#update hosts
-
-
 #DAW
-
 #plug-in directory
 ##AU
 aupath='/Library/Audio/Plug-Ins/Components'
@@ -450,5 +440,14 @@ install_NI() {
 #install_trilian
 #install_omnisphere2
 #install_NI
+
+#defaults set
+sh ~/.repos/osx-defaults.sh
+
+#brewfile
+
+#dotsfiles
+
+#update hosts
 
 #rm -d $tmp
