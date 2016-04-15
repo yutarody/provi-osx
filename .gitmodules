@@ -1,0 +1,3 @@
+[submodule "osx-defaults"]
+	path = osx-defaults
+	url = https://yutarody@github.com/yutarody/osx-defaults.git
