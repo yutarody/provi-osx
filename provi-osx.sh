@@ -25,14 +25,28 @@ serverdata='/Volumes/Data/Appz/DAW'
 #defaults set
 
 #brewfile
+brew file install
 
-#dotsfiles
+#dotsfiles(zsh)
+git clone --recursive https://yutarody@github.com/yutarody/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+cd "${ZDOTDIR:-$HOME}/.zprezto"
+git remote add upstream https://github.com/sorin-ionescu/prezto.git
+cd ~
+setopt EXTENDED_GLOB
+for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N)
+do
+  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+done
 
 #update hosts
-
+echo "127.0.0.1     activate.adobe.com" >> /etc/hosts
+echo "127.0.0.1     practivate.adobe.com" >> /etc/hosts
+echo "127.0.0.1     lm.licenses.adobe.com" >> /etc/hosts
+echo "127.0.0.1     lmlicenses.wip4.adobe.com" >> /etc/hosts
+echo "127.0.0.1     hlrcv.stage.adobe.com" >> /etc/hosts
+echo "127.0.0.1     na1r.services.adobe.com" >> /etc/hosts
 
 #DAW
-
 #plug-in directory
 ##AU
 aupath='/Library/Audio/Plug-Ins/Components'
