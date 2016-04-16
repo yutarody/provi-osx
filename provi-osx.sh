@@ -23,6 +23,7 @@ fi
 serverdata='/Volumes/Data/Appz/DAW'
 
 #defaults set
+sh ~/.repos/osx-defaults.sh
 
 #brewfile
 brew file install
