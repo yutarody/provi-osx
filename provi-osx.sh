@@ -1,14 +1,19 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+#install Xcode
+xcode-select --install
+echo 'Next install xcode'
+read wait
 
 #root
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 #init directory
-mkdir -p ~/.temp
-mkdir -p ~/.repos
-tmp='/Users/yutaro/.temp'
-repos='Users/yutaro/.repos'
+mkdir -p $HOME/.temp
+#mkdir -p $HOME/.repos
+tmp="$HOME/.temp"
+repos="$HOME/.repos"
 
 #NAS Mount CHk
 MOUNT_CHECK=`df | grep /Volumes/Data$  | wc -l`
@@ -19,35 +24,36 @@ if [[ $MOUNT_CHECK -eq 0 ]]; then
   mount_afp "afp://yutaro:$ans@192.168.1.1/Data" /Volumes/Data
 fi
 
+#Applications
+#Server path
+install_mediaencorder() {
+  serverdata='/Volumes/Data/Appz'
+  dmg_file="$serverdata/Adobe_Media_Encoder_CC/Setup.dmg"
+  echo $dmg_file
+  mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+  pkg_file="$mount_dir/Adobe Media Encoder CC 2015/install.app"
+  open "$pkg_file"
+  echo 'Manual Install to end return any keys'
+  read wait
+  hdiutil detach "$mount_dir"
+
+  #update
+  dmg_file="$serverdata/Adobe_Media_Encoder_CC/Update.dmg"
+  mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+  pkg_file="$mount_dir/AdobePatchInstaller.app"
+  open "$pkg_file"
+  echo 'Manual Install to end return any keys'
+  read wait
+  hdiutil detach "$mount_dir"
+
+  #etc
+  sudo sh $serverdata/Adobe_Media_Encoder_CC/etc/hosts.sh
+}
+
+#DAW
 #Server path
 serverdata='/Volumes/Data/Appz/DAW'
 
-#defaults set
-sh ~/.repos/osx-defaults.sh
-
-#brewfile
-brew file install
-
-#dotsfiles(zsh)
-git clone --recursive https://yutarody@github.com/yutarody/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-cd "${ZDOTDIR:-$HOME}/.zprezto"
-git remote add upstream https://github.com/sorin-ionescu/prezto.git
-cd ~
-setopt EXTENDED_GLOB
-for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N)
-do
-  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-done
-
-#update hosts
-echo "127.0.0.1     activate.adobe.com" >> /etc/hosts
-echo "127.0.0.1     practivate.adobe.com" >> /etc/hosts
-echo "127.0.0.1     lm.licenses.adobe.com" >> /etc/hosts
-echo "127.0.0.1     lmlicenses.wip4.adobe.com" >> /etc/hosts
-echo "127.0.0.1     hlrcv.stage.adobe.com" >> /etc/hosts
-echo "127.0.0.1     na1r.services.adobe.com" >> /etc/hosts
-
-#DAW
 #plug-in directory
 ##AU
 aupath='/Library/Audio/Plug-Ins/Components'
@@ -56,7 +62,7 @@ VSTpath='/Library/Audio/Plug-Ins/VST'
 ##VST3
 VST3path='/Library/Audio/Plug-Ins/VST3'
 #cache
-cache='/Users/yutaro/Library/Caches'
+cache="$HOME/Library/Caches"
 
 #Logic
 install_logic() {
@@ -88,6 +94,13 @@ install_effectrix() {
   pkg_file="$mount_dir/Effectrix.pkg"
   sudo installer -pkg "$pkg_file" -target /
   hdiutil detach "$mount_dir"
+}
+
+install_bfd() {
+  pkg_file="$serverdata/fxpansion/BFD3_3-1-3-5_Update/BFD3 Installer OSX.app"
+    open "$pkg_file"
+    echo 'Manual Install to the end return any keys'
+    read wait
 }
 
 #iZotope
@@ -380,7 +393,7 @@ install_NI() {
   nipath="$serverdata/NativeInstruments"
   #Preference Copy
   sudo rsync -av "$nipath/NI_Preference/"* '/Library/Preferences/'
-  #rsync -av "$nipath/NI_Preference_users/"* '/Users/yutaro/Library/Preferences/'
+  #rsync -av "$nipath/NI_Preference_users/"* "$HOME/Library/Preferences/"
   #mkdir
   sudo mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,Enhanced\ EQ,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,Passive\ EQ,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger,Supercharger\ GT,Transient\ Master\ FX,VC\ 160\ FX,VC\ 2A\ FX,VC\ 76\ FX,Vari\ Comp}
 
@@ -416,7 +429,7 @@ install_NI() {
 
   done
 
-#    read wait
+  #read wait
 
   #reaktor update
   pkg_file="$nipath/reaktor/update/*pkg"
@@ -425,7 +438,7 @@ install_NI() {
     sudo installer -pkg "$pkg_files" -target /
   done
 
-  rsync -avz "$nipath/Service Center" "/Users/yutaro/Library/Application Support/Native Instruments/Service Center"
+  rsync -avz "$nipath/Service Center" "$HOME/Library/Application Support/Native Instruments/Service Center"
 
   #etc plug-in
   sudo rsync -av $nipath/etc/AU/ $aupath/
@@ -440,30 +453,50 @@ install_NI() {
   sudo rsync -av "$nipath/etc/app/Reaktor 6.app" '/Applications/Native Instruments/Reaktor 6/'
 }
 
-#install_logic
-#install_bias
-#install_bozdigital
-#install_effectrix
-#install_iZotope
-#install_podfarm
-#install_LiquidSonics
-#install_pianoteq
-#install_nugensudio
-#install_overloud
-#install_peavey
-#install_PluginAlliance
-#install_presonus
-#install_psp
-#install_redwirez
-#install_samplemagic
-#install_soundtoys
-#install_cubase
-#install_valhallaDSP
-#install_vocaloid
-#install_vocaloidforcubase
-#install_waves
-#install_trilian
-#install_omnisphere2
-#install_NI
+#defaults set
+setup_defaults() {
+  sh $HOME/.repos/osx-defaults/defaults-write.sh
+  read wait
+}
 
-#rm -d $tmp
+#brewfile
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew tap caskroom/cask
+git clone https://github.com/yutarody/brew-file.git $repos
+brew file install
+
+setup_defaults
+install_logic
+install_bias
+install_bozdigital
+install_effectrix
+install_bfd
+install_iZotope
+install_podfarm
+install_LiquidSonics
+install_pianoteq
+install_nugensudio
+install_overloud
+install_peavey
+install_PluginAlliance
+install_presonus
+install_psp
+install_redwirez
+install_samplemagic
+install_soundtoys
+install_cubase
+install_valhallaDSP
+install_vocaloid
+install_vocaloidforcubase
+install_waves
+install_trilian
+install_omnisphere2
+install_NI
+install_mediaencorder
+
+#mackup
+echo 'after Dropbox sync'
+echo 'Press Any keys'
+mackup restore
+
+rm -d $tmp
