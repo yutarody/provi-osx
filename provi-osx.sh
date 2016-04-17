@@ -462,7 +462,7 @@ setup_defaults() {
 #brewfile
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew tap caskroom/cask
-git clone https://github.com/yutarody/brew-file.git $repos
+git clone https://github.com/yutarody/brew-file.git $repos/brew-file
 brew file install
 
 setup_defaults
