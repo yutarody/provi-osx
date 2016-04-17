@@ -5,7 +5,7 @@
 1. Git clone
 ```
 mkdir $HOME/.repos
-git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos
+git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos/provi-osx
 ```
 2. Setup zprezto
 ```
