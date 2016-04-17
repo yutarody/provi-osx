@@ -9,6 +9,7 @@ git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos
 ```
 2. Setup zprezto
 ```
+zsh
 zsh $HOME/.repos/provi-osx/setup_zprezto.zsh
 ```
 
