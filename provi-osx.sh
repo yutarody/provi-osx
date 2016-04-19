@@ -4,9 +4,9 @@
 set -e
 
 #Command Line Tools Install Excude Xcode
-xcode-select --install
-echo 'Finish Install Command Line Tools,Press Enter Key'
-read wait
+#xcode-select --install
+#echo 'Finish Install Command Line Tools,Press Enter Key'
+#read wait
 
 #root
 sudo -v
