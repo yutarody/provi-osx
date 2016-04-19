@@ -521,7 +521,7 @@ install_NI() {
 #defaults set
 setup_defaults() {
   echo 'Start set up defaults'
-  sh $HOME/.repos/osx-defaults/defaults-write.sh
+  sh $HOME/.repos/provi-osx/osx-defaults/defaults-write.sh
   read wait
   echo 'defaults set up is complete'
 }
