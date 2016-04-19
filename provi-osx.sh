@@ -151,7 +151,7 @@ install_podfarm() {
   sudo installer -pkg "$pkg_file" -target /
   hdiutil detach "$mount_dir"
   echo 'Pod Farm etc Task Start'
-  sudo cp -rp $serverdata/Line6/etc/L6TWXY.framework /Library/Frameworks
+  sudo rsync -av $serverdata/Line6/etc/L6TWXY.framework /Library/Frameworks
   echo 'Pod Farm installation is complete'
 }
 
