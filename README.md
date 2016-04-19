@@ -4,6 +4,7 @@
 ### How to Use
 1. Git clone
 ```
+xcode-select --install
 mkdir $HOME/.repos
 git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos/provi-osx
 ```
