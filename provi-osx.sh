@@ -151,7 +151,7 @@ install_podfarm() {
   sudo installer -pkg "$pkg_file" -target /
   hdiutil detach "$mount_dir"
   echo 'Pod Farm etc Task Start'
-  sudo cp -rp $serverdata/Line6/etc/L6TWXY.framework /Library/Frameworks
+  sudo rsync -av $serverdata/Line6/etc/L6TWXY.framework /Library/Frameworks
   echo 'Pod Farm installation is complete'
 }
 
@@ -173,7 +173,7 @@ install_pianoteq() {
   pkg_file="$serverdata/Modartt/Install Pianoteq 5 STAGE.app"
   open "$pkg_file"
   echo 'Manual installation, press any key when you are finished'
-  read wait  echo 'Logic X installation is complete'
+  read wait
   echo 'pianoteq installation is complete'
 }
 
@@ -542,40 +542,43 @@ setup_homebrew() {
   echo 'Brew-file Complete'
 }
 
-setup_defaults
-install_logic
-install_bias
-install_bozdigital
-install_effectrix
-install_bfd
-install_iZotope
-install_podfarm
-install_LiquidSonics
-install_pianoteq
-install_nugenaudio
-install_overloud
-install_peavey
-install_PluginAlliance
-install_presonus
-install_psp
-install_redwirez
-install_samplemagic
-install_soundtoys
+#setup_defaults
+#install_logic
+#install_bias
+#install_bozdigital
+#install_effectrix
+#install_bfd
+#install_iZotope
+#install_podfarm
+#install_LiquidSonics
+#install_pianoteq
+#install_nugenaudio
+#install_overloud
+#install_peavey
+#install_PluginAlliance
+#install_presonus
+#install_psp
+#install_redwirez
+#install_samplemagic
+#install_soundtoys
 #install_cubase
-install_valhallaDSP
-install_vocaloid
-install_vocaloidforcubase
+#install_valhallaDSP
+#install_vocaloid
+#install_vocaloidforcubase
+#install_NI
+
+setup_homebrew
 install_waves
 install_trilian
 install_omnisphere2
-install_NI
 install_mediaencorder
-setup_homebrew
 
-#mackup
+#backup
 echo 'Start Set up Mackup'
 echo 'after Dropbox sync'
 echo 'Press Any key'
 mackup restore
+
+#apm install
 
 rm -d $tmp
