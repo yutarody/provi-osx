@@ -34,7 +34,9 @@ fi
 install_mediaencorder() {
   echo 'Start the installation of Adobe Media Encorder'
   serverdata='/Volumes/Data/Appz'
-  dmg_file="$serverdata/Adobe_Media_Encoder_CC/Setup.dmg"
+  rsync -a $serverdata/Adobe_Media_Encoder_CC $tmp
+  rsync -a $serverdata/Adobe_Media_Encoder_CC $tmp
+  dmg_file="$tmp/Adobe_Media_Encoder_CC/Setup.dmg"
   mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
   pkg_file="$mount_dir/Adobe Media Encoder CC 2015/install.app"
   open "$pkg_file"
@@ -44,7 +46,7 @@ install_mediaencorder() {
   echo 'Adobe Media Encorder Installed'
 
   #update
-  dmg_file="$serverdata/Adobe_Media_Encoder_CC/Update.dmg"
+  dmg_file="$tmp/Adobe_Media_Encoder_CC/Update.dmg"
   mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
   pkg_file="$mount_dir/AdobePatchInstaller.app"
   open "$pkg_file"
@@ -54,7 +56,7 @@ install_mediaencorder() {
   echo 'Adobe Media Encorder Updated'
 
   #etc
-  sudo sh $serverdata/Adobe_Media_Encoder_CC/etc/hosts.sh
+  sudo sh $tmp/Adobe_Media_Encoder_CC/etc/hosts.sh
   echo 'Update Hosts File'
   echo 'Adobe Media Encorder installation is complete'
 }
@@ -139,6 +141,7 @@ install_iZotope() {
   sudo cp -pr $serverdata/iZotope/etc/*.component $aupath/
   sudo cp -pr $serverdata/iZotope/etc/*.vst $VSTpath/
   sudo cp -pr $serverdata/iZotope/etc/*.vst3 $VST3path/
+  sudo chmod g+rw "$HOME/Documents/iZotope"
   echo 'iZotope Bundle installation is complete'
 }
 
@@ -152,6 +155,7 @@ install_podfarm() {
   hdiutil detach "$mount_dir"
   echo 'Pod Farm etc Task Start'
   sudo rsync -av $serverdata/Line6/etc/L6TWXY.framework /Library/Frameworks
+  sudo chmod g+rw "$HOME/Documents/Line 6"
   echo 'Pod Farm installation is complete'
 }
 
@@ -540,9 +544,41 @@ setup_homebrew() {
   echo 'Install Brew-file'
   brew file install
   echo 'Brew-file Complete'
+  echo 'Ricty Init Start'
+  cp -f /usr/local/Cellar/ricty/3.2.4/share/fonts/Ricty*.ttf ~/Library/Fonts/
+  fc-cache -vf
+  echo 'Ricty Init Complete'
+  echo 'owncask remote add'
+  cd /usr/local/Library/Taps/yutarody/homebrew-owncask
+  echo 'Enter Github password'
+  read ans
+  git remote set-url origin https://yutarody:$ans@github.com/yutarody/homebrew-owncask.git
+  echo 'Homebrew setup Complete'
 }
 
+#apm install
+install_apm() {
+  git clone https://github.com/yutarody/apm-files.git $HOME/.repos/apm-files
+  apm install --packages-file $HOME/.repos/apm-files/apm-files
+}
+
+#mackup_restore
+mackup_restore() {
+  echo 'Start Set up Mackup'
+  echo 'after Dropbox sync'
+  echo 'Press Any key'
+  read wait
+  mackup restore
+}
+
+#iterm skin set
+
+
 #setup_defaults
+#setup_homebrew
+#install_apm
+#mackup_restore
+
 #install_logic
 #install_bias
 #install_bozdigital
@@ -566,19 +602,9 @@ setup_homebrew() {
 #install_vocaloid
 #install_vocaloidforcubase
 #install_NI
-
-setup_homebrew
-install_waves
-install_trilian
-install_omnisphere2
+#install_waves
+#install_trilian
+#install_omnisphere2
 install_mediaencorder
 
-#backup
-echo 'Start Set up Mackup'
-echo 'after Dropbox sync'
-echo 'Press Any key'
-mackup restore
-
-#apm install
-
-rm -d $tmp
+rm -rf $tmp
