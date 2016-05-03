@@ -316,6 +316,13 @@ install_valhallaDSP() {
   echo 'valhallaDSP installation is complete'
 }
 
+#klevgrand
+install_klevgrand() {
+  echo 'Start the installation of klevgrand'
+  sudo rsync -a $serverdata/klevgrand/ $aupath/
+  echo 'klevgrand installation is complete'
+}
+
 #vocaloid
 install_vocaloid() {
   #app installer
@@ -599,12 +606,13 @@ mackup_restore() {
 #install_soundtoys
 #install_cubase
 #install_valhallaDSP
+install_klevgrand
 #install_vocaloid
 #install_vocaloidforcubase
 #install_NI
 #install_waves
 #install_trilian
 #install_omnisphere2
-install_mediaencorder
+#install_mediaencorder
 
 rm -rf $tmp
