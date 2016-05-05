@@ -8,10 +8,10 @@ xcode-select --install
 mkdir $HOME/.repos
 git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos/provi-osx
 ```
-2. Setup zprezto
+2. Setup zgen include presto
 ```
 zsh
-zsh $HOME/.repos/provi-osx/setup_zprezto.zsh
+zsh $HOME/.repos/provi-osx/setup_zgen.zsh
 ```
 
 3. Run script
