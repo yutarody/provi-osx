@@ -2,6 +2,11 @@
 
 ## My Mac OSX Provisioning
 ### How to Use
+```
+defaults write com.apple.finder AppleShowAllFiles -boolean true
+killall Finder
+```
+
 1. Git clone
 ```
 xcode-select --install
