@@ -19,6 +19,7 @@ exec zsh
 git clone https://github.com/yutarody/dotfiles.git
 
 #Set up Zgen and the starter kit
+git clone https://github.com/tarjoilija/zgen.git .zgen
 git clone git@github.com:unixorn/zsh-quickstart-kit.git
 cd zsh-quickstart-kit
 stow --target=$HOME zsh
