@@ -11,6 +11,7 @@ git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos/pr
 2. Setup zgen include presto
 ```
 zsh
+git clone https://github.com/tarjoilija/zgen.git .zgen
 zsh $HOME/.repos/provi-osx/setup_zgen.zsh
 ```
 
