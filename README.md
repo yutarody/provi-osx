@@ -3,6 +3,9 @@
 ## My Mac OSX Provisioning
 ### How to Use
 ```
+ssh-keygen -t rsa -b 4096 -C "yutaro.ver05@gmail.com"
+ssh-add ~/.ssh/id_rsa
+pbcopy < ~/.ssh/id_rsa.pub
 defaults write com.apple.finder AppleShowAllFiles -boolean true
 killall Finder
 ```
