@@ -1,18 +1,27 @@
 # provi-osx
 
 ## My Mac OSX Provisioning
+
 ### How to Use
+
+#### First Step
 ```
+xcode-select --install
+```
+##### ssh-keygen for Access Github
 ssh-keygen -t rsa -b 4096 -C "yutaro.ver05@gmail.com"
 ssh-add ~/.ssh/id_rsa
 pbcopy < ~/.ssh/id_rsa.pub
+open 'https://github.com/settings/keys'
+
+##### Show Hidden Files & Folders
+```
 defaults write com.apple.finder AppleShowAllFiles -boolean true
 killall Finder
 ```
 
 1. Git clone
 ```
-xcode-select --install
 mkdir $HOME/.repos
 git clone --recursive https://github.com/yutarody/provi-osx.git  $HOME/.repos/provi-osx
 ```
