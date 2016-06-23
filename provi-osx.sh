@@ -539,8 +539,8 @@ setup_defaults() {
 
 #brewfile
 setup_homebrew() {
-  echo 'Start Setup Homebrew'
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  #echo 'Start Setup Homebrew'
+  #/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   #Tap cask
   brew tap caskroom/cask
   #Install Homebrew-file
@@ -581,9 +581,9 @@ mackup_restore() {
 #iterm skin set
 
 
-#setup_defaults
-#setup_homebrew
-#install_apm
+setup_defaults
+setup_homebrew
+install_apm
 #mackup_restore
 
 #install_logic
@@ -606,7 +606,7 @@ mackup_restore() {
 #install_soundtoys
 #install_cubase
 #install_valhallaDSP
-install_klevgrand
+#install_klevgrand
 #install_vocaloid
 #install_vocaloidforcubase
 #install_NI
