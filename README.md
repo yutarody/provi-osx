@@ -4,13 +4,13 @@
 
 ### How to Use
 
-#### First Step
+#### Install Xcode
 ```
 xcode-select --install
 ```
 ##### ssh-keygen for Access Github
 ```
-ssh-keygen -t rsa -b 4096 -C "yutaro.ver05@gmail.com"
+ssh-keygen -t rsa -b 4096 -C "yutaro.ver05+github@gmail.com"
 ssh-add ~/.ssh/id_rsa
 pbcopy < ~/.ssh/id_rsa.pub
 open 'https://github.com/settings/keys'
