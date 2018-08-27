@@ -22,6 +22,9 @@ mkdir -p $HOME/.temp
 tmp="$HOME/.temp"
 repos="$HOME/.repos"
 
+#safaridriver enable
+/usr/bin/safaridriver --enable
+
 #NAS Mount CHk
 MOUNT_CHECK=`df | grep /Volumes/Data$  | wc -l`
 if [[ $MOUNT_CHECK -eq 0 ]]; then
@@ -229,14 +232,14 @@ install_PluginAlliance() {
 }
 
 #presonus
-install_presonus() {
-  echo 'Start the installation of Studio One'
-  dmg_file="$serverdata/presonus/PreSonus - Studio One 3 Professional v3.2.0.36707 OS X.dmg"
-  mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
-  sudo /usr/bin/ditto "$mount_dir/Studio One 3.app" "/Applications/Studio One 3.app"
-  hdiutil detach "$mount_dir"
-  echo 'Studio One installation is complete'
-}
+# install_presonus() {
+#   echo 'Start the installation of Studio One'
+#   dmg_file="$serverdata/presonus/PreSonus - Studio One 3 Professional v3.2.0.36707 OS X.dmg"
+#   mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+#   sudo /usr/bin/ditto "$mount_dir/Studio One 3.app" "/Applications/Studio One 3.app"
+#   hdiutil detach "$mount_dir"
+#   echo 'Studio One installation is complete'
+# }
 
 #PSPaudioware
 install_psp() {
@@ -275,15 +278,15 @@ install_samplemagic() {
 }
 
 #soundtoys
-install_soundtoys() {
-  echo 'Start the installation of soundtoys'
-  pkg_file="$serverdata/soundtoys/*pkg"
-  for pkg_files in $pkg_file
-  do
-    sudo installer -pkg "$pkg_files" -target /
-  done
-  echo 'soundtoys installation is complete'
-}
+# install_soundtoys() {
+#   echo 'Start the installation of soundtoys'
+#   pkg_file="$serverdata/soundtoys/*pkg"
+#   for pkg_files in $pkg_file
+#   do
+#     sudo installer -pkg "$pkg_files" -target /
+#   done
+#   echo 'soundtoys installation is complete'
+# }
 
 #steinberg cubase elements 8
 install_cubase() {
@@ -400,29 +403,29 @@ install_vocaloidforcubase() {
 }
 
 #waves
-install_waves() {
-  echo 'Start the installation of Waves'
-  #Install From Waves Central
-  open '/Applications/Waves Central.app'
-  echo "Please Manual Install
-        - Mercury
-        - Abbey Road Collection
-        - SSL 4000 Collection
-        - GTR Solo (Optional. Full GTR is included in Mercury)
-        - WavesTune LT (Optional. Full WavesTune is included in Mercury)"
-  read wait
-  #etc
-  image_file="$serverdata/waves/WavesLicenseEngine.dmg"
-  for image_files in $image_file
-  do
-    mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
-    pkg_file="$mount_dir/WavesLicenseEngine.pkg"
-    sudo installer -pkg "$pkg_file" -target /
-    hdiutil detach "$mount_dir"
-  done
-  open "/Applications/Waves/WaveShells V9/Waves AU Reg Utility 9.6.app"
-  echo 'Waves installation is complete'
-}
+# install_waves() {
+#   echo 'Start the installation of Waves'
+#   #Install From Waves Central
+#   open '/Applications/Waves Central.app'
+#   echo "Please Manual Install
+#         - Mercury
+#         - Abbey Road Collection
+#         - SSL 4000 Collection
+#         - GTR Solo (Optional. Full GTR is included in Mercury)
+#         - WavesTune LT (Optional. Full WavesTune is included in Mercury)"
+#   read wait
+#   #etc
+#   image_file="$serverdata/waves/WavesLicenseEngine.dmg"
+#   for image_files in $image_file
+#   do
+#     mount_dir=`hdiutil attach "$image_files" | awk -F '\t' 'END{print $NF}'`
+#     pkg_file="$mount_dir/WavesLicenseEngine.pkg"
+#     sudo installer -pkg "$pkg_file" -target /
+#     hdiutil detach "$mount_dir"
+#   done
+#   open "/Applications/Waves/WaveShells V9/Waves AU Reg Utility 9.6.app"
+#   echo 'Waves installation is complete'
+# }
 
 #Spectrasonics
 ##trilian
@@ -462,72 +465,72 @@ install_omnisphere2() {
 }
 
 #NativeInstrumens
-install_NI() {
-  echo 'Start the installation of Native Instruments Bundle'
-  nipath="$serverdata/NativeInstruments"
-  #Preference Copy
-  sudo rsync -a "$nipath/NI_Preference/"* '/Library/Preferences/'
-  #rsync -a "$nipath/NI_Preference_users/"* "$HOME/Library/Preferences/"
-  #mkdir
-  sudo mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,Enhanced\ EQ,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,Passive\ EQ,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger,Supercharger\ GT,Transient\ Master\ FX,VC\ 160\ FX,VC\ 2A\ FX,VC\ 76\ FX,Vari\ Comp}
-
-  #for massive,Battery,FM8,Guitar Rig
-  sudo mkdir /Applications/Native\ Instruments/Massive/Battery\ 4.app
-  sudo mkdir /Applications/Native\ Instruments/Massive/Massive.app
-  sudo mkdir /Applications/Native\ Instruments/FM8/FM8.app
-  sudo mkdir /Applications/Native\ Instruments/Guitar\ Rig\ 5/Guitar\ Rig\ 5.app
-
-  #pkg install
-  rsync -a $nipath/pkgs/ $tmp
-  pkg_file="$tmp/*pkg"
-  for pkg_files in $pkg_file
-  do
-    rsync -a "$pkg_files"
-    open "$pkg_files"
-  done
-  echo 'Manual Install'
-  read wait
-
-  #reaktor install
-  iso_file="$nipath/reaktor/*.iso"
-  for dmg_file in $iso_file
-  do
-    mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
-    sudo installer -pkg "$mount_dir"/*Mac.pkg -target /
-    hdiutil detach "$mount_dir"
-  done
-
-  #reaktor pkg
-  pkg_file="$nipath/reaktor/*pkg"
-  for pkg_files in $pkg_file
-  do
-    sudo installer -pkg "$pkg_files" -target /
-  done
-
-  #read wait
-
-  #reaktor update
-  pkg_file="$nipath/reaktor/update/*pkg"
-  for pkg_files in $pkg_file
-  do
-    sudo installer -pkg "$pkg_files" -target /
-  done
-
-  rsync -a "$nipath/Service Center" "$HOME/Library/Application Support/Native Instruments/Service Center"
-
-  #etc plug-in
-  sudo rsync -a $nipath/etc/AU/ $aupath/
-  sudo rsync -a $nipath/etc//VST/ $VSTpath/
-
-  #etc app
-  sudo rsync -a "$nipath/etc/app/Battery 4.app" '/Applications/Native Instruments/Battery 4/'
-  sudo rsync -a "$nipath/etc/app/FM8.app" '/Applications/Native Instruments/FM8/'
-  sudo rsync -a "$nipath/etc/app/Guitar Rig 5.app" '/Applications/Native Instruments/Guitar Rig 5/'
-  sudo rsync -a "$nipath/etc/app/Kontakt 5.app" '/Applications/Native Instruments/Kontakt 5/'
-  sudo rsync -a "$nipath/etc/app/Massive.app" '/Applications/Native Instruments/Massive/'
-  sudo rsync -a "$nipath/etc/app/Reaktor 6.app" '/Applications/Native Instruments/Reaktor 6/'
-  echo 'Native Instruments Bundle installation is complete'
-}
+# install_NI() {
+#   echo 'Start the installation of Native Instruments Bundle'
+#   nipath="$serverdata/NativeInstruments"
+#   #Preference Copy
+#   sudo rsync -a "$nipath/NI_Preference/"* '/Library/Preferences/'
+#   #rsync -a "$nipath/NI_Preference_users/"* "$HOME/Library/Preferences/"
+#   #mkdir
+#   sudo mkdir -p /Applications/Native\ Instruments/{Battery\ 4,Driver,Enhanced\ EQ,FM8,Guitar\ Rig\ 5,Kontakt\ 5,Massive,RC\ 24,Passive\ EQ,RC\ 48,Reaktor\ 6,Replika,Solid\ Bus\ Comp\ FX,Solid\ Dynamics\ FX,Solid\ EQ\ FX,Supercharger,Supercharger\ GT,Transient\ Master\ FX,VC\ 160\ FX,VC\ 2A\ FX,VC\ 76\ FX,Vari\ Comp}
+#
+#   #for massive,Battery,FM8,Guitar Rig
+#   sudo mkdir /Applications/Native\ Instruments/Massive/Battery\ 4.app
+#   sudo mkdir /Applications/Native\ Instruments/Massive/Massive.app
+#   sudo mkdir /Applications/Native\ Instruments/FM8/FM8.app
+#   sudo mkdir /Applications/Native\ Instruments/Guitar\ Rig\ 5/Guitar\ Rig\ 5.app
+#
+#   #pkg install
+#   rsync -a $nipath/pkgs/ $tmp
+#   pkg_file="$tmp/*pkg"
+#   for pkg_files in $pkg_file
+#   do
+#     rsync -a "$pkg_files"
+#     open "$pkg_files"
+#   done
+#   echo 'Manual Install'
+#   read wait
+#
+#   #reaktor install
+#   iso_file="$nipath/reaktor/*.iso"
+#   for dmg_file in $iso_file
+#   do
+#     mount_dir=`hdiutil attach "$dmg_file" | awk -F '\t' 'END{print $NF}'`
+#     sudo installer -pkg "$mount_dir"/*Mac.pkg -target /
+#     hdiutil detach "$mount_dir"
+#   done
+#
+#   #reaktor pkg
+#   pkg_file="$nipath/reaktor/*pkg"
+#   for pkg_files in $pkg_file
+#   do
+#     sudo installer -pkg "$pkg_files" -target /
+#   done
+#
+#   #read wait
+#
+#   #reaktor update
+#   pkg_file="$nipath/reaktor/update/*pkg"
+#   for pkg_files in $pkg_file
+#   do
+#     sudo installer -pkg "$pkg_files" -target /
+#   done
+#
+#   rsync -a "$nipath/Service Center" "$HOME/Library/Application Support/Native Instruments/Service Center"
+#
+#   #etc plug-in
+#   sudo rsync -a $nipath/etc/AU/ $aupath/
+#   sudo rsync -a $nipath/etc//VST/ $VSTpath/
+#
+#   #etc app
+#   sudo rsync -a "$nipath/etc/app/Battery 4.app" '/Applications/Native Instruments/Battery 4/'
+#   sudo rsync -a "$nipath/etc/app/FM8.app" '/Applications/Native Instruments/FM8/'
+#   sudo rsync -a "$nipath/etc/app/Guitar Rig 5.app" '/Applications/Native Instruments/Guitar Rig 5/'
+#   sudo rsync -a "$nipath/etc/app/Kontakt 5.app" '/Applications/Native Instruments/Kontakt 5/'
+#   sudo rsync -a "$nipath/etc/app/Massive.app" '/Applications/Native Instruments/Massive/'
+#   sudo rsync -a "$nipath/etc/app/Reaktor 6.app" '/Applications/Native Instruments/Reaktor 6/'
+#   echo 'Native Instruments Bundle installation is complete'
+# }
 
 #defaults set
 setup_defaults() {
@@ -539,10 +542,10 @@ setup_defaults() {
 
 #brewfile
 setup_homebrew() {
-  #echo 'Start Setup Homebrew'
+  echo 'Start Setup Homebrew'
   #/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   #Tap cask
-  brew tap caskroom/cask
+  #brew tap caskroom/cask
   #Install Homebrew-file
   echo 'Setup Homebrew-file'
   brew install rcmdnk/file/brew-file
@@ -581,8 +584,8 @@ mackup_restore() {
 #iterm skin set
 
 
-setup_defaults
-setup_homebrew
+#setup_defaults
+#setup_homebrew
 install_apm
 #mackup_restore
 
