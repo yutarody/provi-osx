@@ -1,5 +1,14 @@
+# Install Drivers
+## For motherboard
+[ASUS](https://www.asus.com/jp/Motherboards/TUF-H370-PRO-GAMING-WI-FI/HelpDesk_Download/)
+- chipset
+- LAN
+- WIFI
+- Audio
+- Bluetooth
+
 # Install chocolatey
-Intel_Chipset_Software_win10-64_V101175418066
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Install Boxstarter
 CINST Boxstarter
