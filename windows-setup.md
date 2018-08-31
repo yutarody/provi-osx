@@ -12,6 +12,9 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 
 # Install Boxstarter
 CINST Boxstarter
+Install-BoxstarterPackage -PackageName "https://gist.githubusercontent.com/yutarody/0cb5401223691e771dc66921692587e2/raw/1fe60769648b048c2d0b9375fd176e07329917a2/Boxstarter.ps1" -DisableReboots
+
+
 
 # poweshell setting change for ricty fonts
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
