@@ -1,4 +1,5 @@
 # Install chocolatey
+Intel_Chipset_Software_win10-64_V101175418066
 
 # Install Boxstarter
 CINST Boxstarter
