@@ -555,7 +555,7 @@ setup_homebrew() {
   brew file install
   echo 'Brew-file Complete'
   echo 'Ricty Init Start'
-  cp -f /usr/local/Cellar/ricty/3.2.4/share/fonts/Ricty*.ttf ~/Library/Fonts/
+  #cp -f /usr/local/Cellar/ricty/3.2.4/share/fonts/Ricty*.ttf ~/Library/Fonts/
   fc-cache -vf
   echo 'Ricty Init Complete'
   echo 'owncask remote add'
