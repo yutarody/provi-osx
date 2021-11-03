@@ -2,6 +2,7 @@
 
 #Homebrew setup
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
 
 #dotfiles clone
 git clone https://github.com/yutarody/dotfiles.git
@@ -19,7 +20,7 @@ mkdir $HOME/.zshrc.d
 ln -nsf $HOME/dotfiles/001-myset $HOME/.zshrc.d/
 
 #Switch Homebrew zsh
-brew install --without-etcdir zsh
+brew install zsh --ignore-dependencies
 echo '/usr/local/bin/zsh' | pbcopy
 #insert to shells
 sudo vim /etc/shells
