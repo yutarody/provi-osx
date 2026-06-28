@@ -11,6 +11,23 @@ M4 Pro MacBook Pro セットアップ手順（2026年版）
 | **Homebrew + Brewfile** | パッケージ・アプリ一括インストール |
 | **macos-defaults.sh** | macOS システム設定の自動化 |
 
+## クイックスタート
+
+macOS 初期化（セクション 0）が完了したら、以下の1コマンドで全自動実行：
+
+```bash
+git clone https://github.com/yutarody/provi-osx.git ~/dev/provi-osx
+bash ~/dev/provi-osx/setup.sh
+```
+
+途中から再開する場合:
+```bash
+bash ~/dev/provi-osx/setup.sh --from 3  # Step 3 から再開
+bash ~/dev/provi-osx/setup.sh --reset   # 進捗リセット
+```
+
+> 以降のセクション（1〜6）は各ステップの詳細・補足。setup.sh が自動で処理する。
+
 ---
 
 ## 0. macOS 初期化（新MacのOS設定）
@@ -199,8 +216,11 @@ bash ~/dev/provi-osx/plugin-setup-guide.sh
 ```
 provi-osx/
 ├── README.md              # このファイル
+├── setup.sh               # メインスクリプト（全ステップを包括）
 ├── macos-defaults.sh      # macOS defaults write 設定
+├── Brewfile               # Homebrew パッケージ一覧
 ├── plugin-setup-guide.sh  # DAWプラグイン インタラクティブガイド
+├── install-free-plugins.sh # 無料プラグイン自動インストール
 ├── legacy/                # 旧スクリプト（参考用・非推奨）
 │   ├── provi-osx.sh
 │   ├── install.sh
