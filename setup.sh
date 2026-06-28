@@ -173,32 +173,9 @@ fi
 # ============================================================
 # Step 3: chezmoi で dotfiles を適用
 # ============================================================
-step "Step 3: chezmoi で dotfiles を適用"
+step "Step 3: Brewfile で一括インストール"
 
 if completed_step 4; then
-  log "スキップ（完了済み）"
-else
-  # chezmoi インストール
-  if ! command -v chezmoi &>/dev/null; then
-    info "chezmoi をインストール中..."
-    brew install chezmoi
-  else
-    log "chezmoi はインストール済み"
-  fi
-
-  info "dotfiles を適用中..."
-  chezmoi init --apply git@github.com:yutarody/dotfiles.git
-
-  set_progress 4
-  log "完了"
-fi
-
-# ============================================================
-# Step 4: Brewfile で一括インストール
-# ============================================================
-step "Step 4: Brewfile で一括インストール"
-
-if completed_step 5; then
   log "スキップ（完了済み）"
 else
   manual "App Store にサインインしていることを確認してください（mas のインストールに必要）"
@@ -212,6 +189,22 @@ else
     read -rp "  続行しますか？ [Y/n]: " ans
     [[ "$ans" == "n" || "$ans" == "N" ]] && exit 1
   fi
+
+  set_progress 4
+  log "完了"
+fi
+
+# ============================================================
+# Step 4: chezmoi で dotfiles を適用
+# ============================================================
+step "Step 4: chezmoi で dotfiles を適用"
+
+if completed_step 5; then
+  log "スキップ（完了済み）"
+else
+  # chezmoi は Brewfile に含まれているので Step 3 でインストール済み
+  info "dotfiles を適用中..."
+  chezmoi init --apply git@github.com:yutarody/dotfiles.git
 
   set_progress 5
   log "完了"
@@ -227,10 +220,9 @@ if completed_step 6; then
 else
   if command -v fnm &>/dev/null; then
     info "Node.js LTS をインストール中..."
-    eval "$(fnm env --use-on-cd)"
+    eval "$(fnm env)"
     fnm install --lts
-    fnm use lts-latest
-    fnm default lts-latest
+    fnm default "$(fnm current)"
     log "Node.js $(node -v) をインストール完了"
 
     # npm グローバルパッケージ

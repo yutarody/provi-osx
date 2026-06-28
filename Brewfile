@@ -28,6 +28,7 @@ brew "yt-dlp"
 brew "zsh"
 
 # New tools
+brew "chezmoi"
 brew "fnm"
 brew "uv"
 brew "starship"
