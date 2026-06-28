@@ -9,7 +9,9 @@
 #   bash setup.sh --reset  # 進捗リセット
 # ============================================================
 
-set -e
+# set -e は使わない（brew bundle が一部失敗で non-zero を返すため）
+# 各コマンドの失敗は個別にハンドリング
+set -uo pipefail
 
 PROGRESS_FILE="$HOME/.macos-setup-progress"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,10 +32,8 @@ err()    { echo -e "${RED}[✗]${NC} $1"; }
 # ============================================================
 # 引数処理
 # ============================================================
-FROM_STEP=0
-
-for arg in "$@"; do
-  case $arg in
+while [[ $# -gt 0 ]]; do
+  case $1 in
     --reset)
       rm -f "$PROGRESS_FILE"
       echo "進捗をリセットしました。"
@@ -42,6 +42,13 @@ for arg in "$@"; do
     --from)
       shift
       FROM_STEP="${1:-0}"
+      # 指定ステップの一つ前まで完了済みとして進捗を設定
+      echo "$((FROM_STEP - 1))" > "$PROGRESS_FILE"
+      echo "Step $FROM_STEP から再開します。"
+      shift
+      ;;
+    *)
+      shift
       ;;
   esac
 done
@@ -198,7 +205,13 @@ else
   wait_confirm
 
   info "brew bundle を実行中（時間がかかります）..."
-  brew bundle --file="$SCRIPT_DIR/Brewfile"
+  # brew bundle は一部 cask の再インストールやライセンス都合で non-zero を返すことがある
+  # その場合も継続して、ユーザーに最後に確認を促す
+  if ! brew bundle --file="$SCRIPT_DIR/Brewfile"; then
+    err "brew bundle で一部失敗しました。後で 'brew bundle --file=~/dev/provi-osx/Brewfile' を再実行してください"
+    read -rp "  続行しますか？ [Y/n]: " ans
+    [[ "$ans" == "n" || "$ans" == "N" ]] && exit 1
+  fi
 
   set_progress 5
   log "完了"
@@ -214,11 +227,15 @@ if completed_step 6; then
 else
   if command -v fnm &>/dev/null; then
     info "Node.js LTS をインストール中..."
-    eval "$(fnm env)"
+    eval "$(fnm env --use-on-cd)"
     fnm install --lts
     fnm use lts-latest
     fnm default lts-latest
     log "Node.js $(node -v) をインストール完了"
+
+    # npm グローバルパッケージ
+    info "npm グローバルパッケージをインストール中..."
+    npm install -g defuddle-cli || err "defuddle-cli のインストールに失敗（後で手動実行）"
   else
     err "fnm が見つかりません。Brewfile のインストールを確認してください"
   fi
@@ -228,16 +245,25 @@ else
 fi
 
 # ============================================================
-# Step 6: Dropbox / Google Drive サインイン
+# Step 6: アプリのサインイン + 権限承認
 # ============================================================
-step "Step 6: Dropbox / Google Drive サインイン"
+step "Step 6: アプリのサインイン + 権限承認"
 
 if completed_step 7; then
   log "スキップ（完了済み）"
 else
-  manual "以下のアプリを起動してサインインしてください："
+  manual "▼ クラウドサインイン"
   manual "  1. Dropbox → サインイン → バックアップ設定（Desktop / Documents / Downloads）"
   manual "  2. Google Drive → サインイン"
+  echo ""
+  manual "▼ システム権限承認（要・GUI操作）"
+  manual "  3. Karabiner-Elements を起動"
+  manual "     → システム拡張をブロック解除（システム設定 → プライバシーとセキュリティ）"
+  manual "     → 入力監視を許可"
+  manual "     → アクセシビリティを許可"
+  manual "  4. BetterTouchTool を起動 → アクセシビリティを許可"
+  manual "  5. Alfred を起動 → アクセシビリティを許可 → Powerpack ライセンス入力"
+  manual "  6. Magnet を起動 → アクセシビリティを許可"
   echo ""
   open -a Dropbox 2>/dev/null || true
   wait_confirm

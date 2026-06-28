@@ -225,6 +225,17 @@ bash ~/dev/provi-osx/plugin-setup-guide.sh
 | Parallels Desktop | サブスクリプション認証 |
 | Adobe Creative Cloud | Adobe ID でサインイン |
 
+### システム権限の承認（要 GUI 操作）
+
+| アプリ | 必要な権限 |
+|--------|----------|
+| Karabiner-Elements | システム拡張 / 入力監視 / アクセシビリティ |
+| BetterTouchTool | アクセシビリティ |
+| Alfred | アクセシビリティ |
+| Magnet | アクセシビリティ |
+
+権限はシステム設定 → プライバシーとセキュリティ で許可する。
+
 ### DAW データの移行
 
 旧 Mac のサンプルライブラリを外付けSSD に移行する:

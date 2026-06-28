@@ -156,7 +156,6 @@ mas "Pixelmator", id: 407963104
 mas "PlugInfo", id: 1626412949
 mas "Reeder", id: 1529448980
 mas "ScanSnap Cloud", id: 1035516352
-mas "Xcode", id: 497799835
 
 # =====================
 # VS Code Extensions
@@ -170,8 +169,3 @@ vscode "ms-python.debugpy"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
 vscode "pkief.material-icon-theme"
-
-# =====================
-# npm
-# =====================
-npm "defuddle-cli"
