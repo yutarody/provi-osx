@@ -29,8 +29,8 @@ M4 Pro MacBook Pro セットアップ手順（2026年版）
 
 ```bash
 # リポジトリを clone してから実行
-git clone https://github.com/yutarody/provi-osx.git ~/repos/provi-osx
-bash ~/repos/provi-osx/macos-defaults.sh
+git clone https://github.com/yutarody/provi-osx.git ~/dev/provi-osx
+bash ~/dev/provi-osx/macos-defaults.sh
 ```
 
 または curl で直接実行:
@@ -132,7 +132,7 @@ brew bundle --file=~/Brewfile
 Brewfile でプラグインマネージャーがインストールされた後、インタラクティブガイドを実行:
 
 ```bash
-bash ~/repos/provi-osx/plugin-setup-guide.sh
+bash ~/dev/provi-osx/plugin-setup-guide.sh
 ```
 
 フェーズ構成:
