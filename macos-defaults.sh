@@ -42,22 +42,12 @@ defaults write com.apple.finder ShowStatusBar -bool true
 # パスバーを表示
 defaults write com.apple.finder ShowPathbar -bool true
 
-# デフォルトをホームフォルダに
+# 新規ウィンドウをホームフォルダで開く
 defaults write com.apple.finder NewWindowTarget -string "PfHm"
 
-# スプリングロード（ホバーでフォルダを開く）を有効化
-defaults write NSGlobalDomain com.apple.springing.enabled -bool true
-defaults write NSGlobalDomain com.apple.springing.delay -float 0.2
-
-# .DS_Store をネットワークドライブに作らない
+# .DS_Store をネットワーク/USBドライブに作らない
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
-
-# 検索スコープをデフォルトで現在のフォルダに
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-
-# ウィンドウアニメーションを無効化
-defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 
 log "Finder 設定完了"
 
@@ -72,15 +62,9 @@ defaults write com.apple.dock tilesize -int 48
 # 自動的に隠す
 defaults write com.apple.dock autohide -bool true
 
-# 隠す時間を短く
+# 隠す/表示のアニメーション速度を速く
 defaults write com.apple.dock autohide-delay -float 0.1
 defaults write com.apple.dock autohide-time-modifier -float 0.3
-
-# 最近使ったアプリを Dock に表示しない
-defaults write com.apple.dock show-recents -bool false
-
-# アプリの起動アニメーションをバウンスではなくリニアに
-defaults write com.apple.dock launchanim -bool false
 
 log "Dock 設定完了"
 
@@ -93,7 +77,7 @@ info "キーボード・入力設定..."
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
-# スマートクオートを無効（コーディング向け）
+# スマートクオートを無効
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
 # スマートダッシュを無効
@@ -111,93 +95,28 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 log "キーボード・入力設定完了"
 
 # ============================================================
-# トラックパッド
+# 一般
 # ============================================================
-info "トラックパッド設定..."
-
-# タップでクリックを有効化
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-
-# 軌跡の速さ（0〜3、デフォルト1）
-defaults write NSGlobalDomain com.apple.trackpad.scaling -float 1.5
-
-log "トラックパッド設定完了"
-
-# ============================================================
-# スクリーンショット
-# ============================================================
-info "スクリーンショット設定..."
-
-# 保存先を Desktop に（デフォルトと同じだが明示）
-mkdir -p ~/Desktop
-defaults write com.apple.screencapture location -string "${HOME}/Desktop"
-
-# ファイル形式を PNG に
-defaults write com.apple.screencapture type -string "png"
-
-# ウィンドウシャドウを含めない
-defaults write com.apple.screencapture disable-shadow -bool false
-
-log "スクリーンショット設定完了"
-
-# ============================================================
-# Safari
-# ============================================================
-info "Safari 設定..."
-
-# デベロッパーモードを有効化
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-
-# ステータスバーを表示
-defaults write com.apple.Safari ShowStatusBar -bool true
-
-log "Safari 設定完了"
-
-# ============================================================
-# Terminal / 一般
-# ============================================================
-info "ターミナル・一般設定..."
-
-# UTF-8 を使用
-defaults write com.apple.terminal StringEncodings -array 4
-
-# 起動音を無効化
-sudo nvram SystemAudioVolume=" " 2>/dev/null || true
-
-# アクティビティモニタをすべてのプロセス表示に
-defaults write com.apple.ActivityMonitor ShowCategory -int 0
-
-# アクティビティモニタの更新頻度を上げる（5回/秒）
-defaults write com.apple.ActivityMonitor UpdatePeriod -int 2
+info "一般設定..."
 
 # Crash Reporter を無効化
 defaults write com.apple.CrashReporter DialogType -string "none"
 
-log "ターミナル・一般設定完了"
+# アクティビティモニタをすべてのプロセス表示に
+defaults write com.apple.ActivityMonitor ShowCategory -int 0
+
+# アクティビティモニタの更新頻度を上げる
+defaults write com.apple.ActivityMonitor UpdatePeriod -int 2
+
+log "一般設定完了"
 
 # ============================================================
-# セキュリティ
-# ============================================================
-info "セキュリティ設定..."
-
-# スリープ後すぐにパスワード要求
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
-
-log "セキュリティ設定完了"
-
-# ============================================================
-# 再起動が必要なアプリを終了して再起動
+# 再起動が必要なアプリを再起動
 # ============================================================
 echo ""
 info "設定を反映するためアプリを再起動中..."
 
-for app in "Finder" "Dock" "SystemUIServer" "Safari"; do
+for app in "Finder" "Dock" "SystemUIServer"; do
   killall "$app" &>/dev/null || true
 done
 
