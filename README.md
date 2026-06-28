@@ -135,6 +135,7 @@ bash ~/dev/provi-osx/plugin-setup-guide.sh
 
 | 設定 | 場所 |
 |------|------|
+| Dropbox バックアップ設定 | Dropbox 起動 → 設定 → バックアップ → Desktop / Documents / Downloads を有効化 |
 | Night Shift | システム設定 → ディスプレイ → Night Shift |
 | Focus モード | システム設定 → フォーカス |
 | Dock カスタマイズ | dockutil（Brewfile に含む）で管理 |
