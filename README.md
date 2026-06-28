@@ -206,6 +206,7 @@ bash ~/dev/provi-osx/plugin-setup-guide.sh
 | Night Shift | システム設定 → ディスプレイ → Night Shift |
 | Focus モード | システム設定 → フォーカス |
 | Dock カスタマイズ | dockutil（Brewfile に含む）で管理 |
+| Obsidian Sync | Obsidian 起動 → 設定 → 同期 → サインイン → Vault 選択 → コミュニティプラグイン有効化 |
 
 ### アプリのインストール（Cask なし）
 

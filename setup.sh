@@ -292,11 +292,31 @@ else
 fi
 
 # ============================================================
-# Step 9: DAW プラグインセットアップ
+# Step 9: Obsidian セットアップ
 # ============================================================
-step "Step 9: DAW プラグインセットアップ"
+step "Step 9: Obsidian セットアップ"
 
 if completed_step 10; then
+  log "スキップ（完了済み）"
+else
+  open -a Obsidian 2>/dev/null || true
+  manual "以下を手動で設定してください："
+  manual "  1. Obsidian を起動"
+  manual "  2. 設定 → 同期 → Obsidian Sync にサインイン"
+  manual "  3. Vault を選択して同期開始"
+  manual "  4. 同期完了後、コミュニティプラグインを有効化"
+  wait_confirm
+
+  set_progress 10
+  log "完了"
+fi
+
+# ============================================================
+# Step 10: DAW プラグインセットアップ
+# ============================================================
+step "Step 10: DAW プラグインセットアップ"
+
+if completed_step 11; then
   log "スキップ（完了済み）"
 else
   read -rp "  DAW プラグインのセットアップを開始しますか？ [Y/n]: " ans
@@ -306,7 +326,7 @@ else
     info "スキップ（後で ./plugin-setup-guide.sh を実行してください）"
   fi
 
-  set_progress 10
+  set_progress 11
   log "完了"
 fi
 
