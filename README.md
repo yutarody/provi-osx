@@ -100,12 +100,7 @@ chezmoi init --apply git@github.com:yutarody/dotfiles.git
 ## 4. Brewfile で一括インストール
 
 ```bash
-brew bundle --global
-```
-
-または Brewfile を直接指定:
-```bash
-brew bundle --file=~/Brewfile
+brew bundle --file=~/dev/provi-osx/Brewfile
 ```
 
 インストール内容:
