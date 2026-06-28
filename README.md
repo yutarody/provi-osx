@@ -199,15 +199,42 @@ bash ~/dev/provi-osx/plugin-setup-guide.sh
 
 ## 6. 手動設定が必要な項目
 
+### システム設定
+
 | 設定 | 場所 |
 |------|------|
-| Dropbox バックアップ設定 | Dropbox 起動 → 設定 → バックアップ → Desktop / Documents / Downloads を有効化 |
 | Night Shift | システム設定 → ディスプレイ → Night Shift |
 | Focus モード | システム設定 → フォーカス |
 | Dock カスタマイズ | dockutil（Brewfile に含む）で管理 |
-| Parallels Desktop | ライセンス認証が必要（手動インストール） |
-| Studio One 7 | Cask なし → [presonus.com](https://www.presonus.com) |
-| Synthesizer V | Cask なし → [dreamtonics.com](https://dreamtonics.com) |
+
+### アプリのインストール（Cask なし）
+
+| アプリ | URL |
+|--------|-----|
+| Studio One 7 | [presonus.com](https://www.presonus.com) |
+| Synthesizer V Studio Pro | [dreamtonics.com](https://dreamtonics.com) |
+
+### ライセンス認証が必要なアプリ
+
+| アプリ | 備考 |
+|--------|------|
+| Ableton Live Suite | シリアル認証 |
+| BetterTouchTool | ライセンスキー |
+| Alfred | Powerpack ライセンス |
+| Parallels Desktop | サブスクリプション認証 |
+| Adobe Creative Cloud | Adobe ID でサインイン |
+
+### DAW データの移行
+
+旧 Mac のサンプルライブラリを外付けSSD に移行する:
+
+```bash
+# 旧Mac で外付けSSDにコピー（旧Mac側で実行）
+cp -R ~/Music/Samples/ /Volumes/外付けSSD名/Samples/
+cp -R ~/Parallels/ /Volumes/外付けSSD名/Parallels/
+```
+
+Native Instruments のコンテンツは Native Access で再インストール後、コンテンツの場所を外付けSSD に変更する。
 
 ---
 

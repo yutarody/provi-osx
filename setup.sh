@@ -205,14 +205,80 @@ else
 fi
 
 # ============================================================
-# Step 5: Parallels イメージのコピー
+# Step 5: Node.js セットアップ
 # ============================================================
-step "Step 5: Parallels イメージのコピー"
+step "Step 5: Node.js セットアップ（fnm）"
 
 if completed_step 6; then
   log "スキップ（完了済み）"
 else
-  manual "旧 Mac の ~/Parallels/ を外付けSSD にコピー済みの場合:"
+  if command -v fnm &>/dev/null; then
+    info "Node.js LTS をインストール中..."
+    eval "$(fnm env)"
+    fnm install --lts
+    fnm use lts-latest
+    fnm default lts-latest
+    log "Node.js $(node -v) をインストール完了"
+  else
+    err "fnm が見つかりません。Brewfile のインストールを確認してください"
+  fi
+
+  set_progress 6
+  log "完了"
+fi
+
+# ============================================================
+# Step 6: Dropbox / Google Drive サインイン
+# ============================================================
+step "Step 6: Dropbox / Google Drive サインイン"
+
+if completed_step 7; then
+  log "スキップ（完了済み）"
+else
+  manual "以下のアプリを起動してサインインしてください："
+  manual "  1. Dropbox → サインイン → バックアップ設定（Desktop / Documents / Downloads）"
+  manual "  2. Google Drive → サインイン"
+  echo ""
+  open -a Dropbox 2>/dev/null || true
+  wait_confirm
+
+  set_progress 7
+  log "完了"
+fi
+
+# ============================================================
+# Step 7: DAW データ（サンプルライブラリ）の移行
+# ============================================================
+step "Step 7: DAW データの移行（外付けSSD）"
+
+if completed_step 8; then
+  log "スキップ（完了済み）"
+else
+  manual "旧 Mac のサンプルライブラリを外付けSSD にコピーしてください："
+  manual "  コピー元（旧Mac）: パーティション or ~/Music/Samples/"
+  manual "  コピー先（外付けSSD）: /Volumes/外付けSSD名/Samples/"
+  manual ""
+  manual "Native Instruments コンテンツ（Kontakt 等）は"
+  manual "  Native Access で再インストール後、コンテンツの場所を外付けSSDに変更"
+  echo ""
+  read -rp "  スキップする場合は [s]、完了したら [Enter]: " ans
+  if [[ "$ans" == "s" ]]; then
+    info "スキップ（後で実施してください）"
+  fi
+
+  set_progress 8
+  log "完了"
+fi
+
+# ============================================================
+# Step 8: Parallels イメージのコピー
+# ============================================================
+step "Step 8: Parallels イメージのコピー"
+
+if completed_step 9; then
+  log "スキップ（完了済み）"
+else
+  manual "旧 Mac の ~/Parallels/ を外付けSSD からコピーしてください："
   manual "  cp -R /Volumes/外付けSSD名/Parallels/ ~/Parallels/"
   manual "コピー後、Parallels を起動して .pvm ファイルを開く"
   echo ""
@@ -221,16 +287,16 @@ else
     info "スキップ"
   fi
 
-  set_progress 6
+  set_progress 9
   log "完了"
 fi
 
 # ============================================================
-# Step 6: DAW プラグインセットアップ
+# Step 9: DAW プラグインセットアップ
 # ============================================================
-step "Step 6: DAW プラグインセットアップ"
+step "Step 9: DAW プラグインセットアップ"
 
-if completed_step 7; then
+if completed_step 10; then
   log "スキップ（完了済み）"
 else
   read -rp "  DAW プラグインのセットアップを開始しますか？ [Y/n]: " ans
@@ -240,7 +306,7 @@ else
     info "スキップ（後で ./plugin-setup-guide.sh を実行してください）"
   fi
 
-  set_progress 7
+  set_progress 10
   log "完了"
 fi
 
@@ -251,6 +317,13 @@ echo ""
 echo -e "${BOLD}${GREEN}============================================${NC}"
 echo -e "${BOLD}${GREEN}  セットアップ完了！${NC}"
 echo -e "${BOLD}${GREEN}============================================${NC}"
+echo ""
+echo -e "${YELLOW}ライセンス認証が必要なアプリ:${NC}"
+echo "  - Ableton Live Suite"
+echo "  - BetterTouchTool"
+echo "  - Alfred（Powerpack）"
+echo "  - Parallels Desktop"
+echo "  - Adobe Creative Cloud"
 echo ""
 log "Warp / VS Code / Cursor を起動して動作確認してください"
 log "DAW を起動してプラグインスキャンを実行してください"
