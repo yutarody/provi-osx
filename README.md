@@ -40,21 +40,13 @@ curl -fsSL https://raw.githubusercontent.com/yutarody/provi-osx/master/macos-def
 
 ---
 
-## 1. Xcode Command Line Tools
-
-```bash
-xcode-select --install
-```
-
-ダイアログが出たら「インストール」をクリック。完了まで数分待つ。
-
----
-
-## 2. Homebrew のインストール
+## 1. Homebrew のインストール
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
+
+> Xcode Command Line Tools は Homebrew のインストール時に自動でインストールされる。
 
 インストール後、PATH を通す（Apple Silicon）:
 ```bash
@@ -64,7 +56,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ---
 
-## 3. 1Password のインストールと SSH Agent 設定
+## 2. 1Password のインストールと SSH Agent 設定
 
 ```bash
 brew install --cask 1password
@@ -90,7 +82,7 @@ Host *
 
 ---
 
-## 4. chezmoi で dotfiles を適用
+## 3. chezmoi で dotfiles を適用
 
 ```bash
 brew install chezmoi
@@ -105,7 +97,7 @@ chezmoi init --apply git@github.com:yutarody/dotfiles.git
 
 ---
 
-## 5. Brewfile で一括インストール
+## 4. Brewfile で一括インストール
 
 ```bash
 brew bundle --global
@@ -127,7 +119,7 @@ brew bundle --file=~/Brewfile
 
 ---
 
-## 6. DAW・プラグインのセットアップ
+## 5. DAW・プラグインのセットアップ
 
 Brewfile でプラグインマネージャーがインストールされた後、インタラクティブガイドを実行:
 
@@ -144,7 +136,7 @@ bash ~/dev/provi-osx/plugin-setup-guide.sh
 
 ---
 
-## 7. 手動設定が必要な項目
+## 6. 手動設定が必要な項目
 
 | 設定 | 場所 |
 |------|------|
