@@ -49,8 +49,9 @@ while [[ $# -gt 0 ]]; do
         exit 1
       fi
       FROM_STEP="$1"
-      # 指定ステップの一つ前まで完了済みとして進捗を設定
-      echo "$((FROM_STEP - 1))" > "$PROGRESS_FILE"
+      # 進捗値 N は "Step (N-1) まで完了" を意味する（各 Step は `set_progress (label+1)` を呼ぶ）。
+      # よって Step K から再開させたい場合は progress=K を書く（Steps 0..K-1 完了済み扱い）。
+      echo "$FROM_STEP" > "$PROGRESS_FILE"
       echo "Step $FROM_STEP から再開します。"
       shift
       ;;
@@ -139,9 +140,9 @@ else
 
   # Rosetta 2（Native Access 等 Intel バイナリのために必要）
   if ! /usr/bin/pgrep -q oahd; then
-    info "Rosetta 2 をインストール中..."
-    softwareupdate --install-rosetta --agree-to-license || \
-      err "Rosetta 2 のインストールに失敗（後で手動: softwareupdate --install-rosetta）"
+    info "Rosetta 2 をインストール中（sudo パスワードが要求されます）..."
+    sudo softwareupdate --install-rosetta --agree-to-license || \
+      err "Rosetta 2 のインストールに失敗（後で手動: sudo softwareupdate --install-rosetta --agree-to-license）"
   else
     log "Rosetta 2 はインストール済み"
   fi
@@ -208,8 +209,8 @@ else
   info "brew bundle を実行中（時間がかかります）..."
   # brew bundle は一部 cask の再インストールやライセンス都合で non-zero を返すことがある
   # その場合も継続して、ユーザーに最後に確認を促す
-  # caffeinate でスリープを抑止
-  if ! caffeinate -i brew bundle --file="$SCRIPT_DIR/Brewfile"; then
+  # caffeinate でアイドル・システムスリープを抑止（実行中のみ）
+  if ! caffeinate -is brew bundle --file="$SCRIPT_DIR/Brewfile"; then
     err "brew bundle で一部失敗しました。後で 'brew bundle --file=$SCRIPT_DIR/Brewfile' を再実行してください"
     read -rp "  続行しますか？ [Y/n]: " ans
     [[ "$ans" == "n" || "$ans" == "N" ]] && exit 1

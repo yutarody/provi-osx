@@ -156,10 +156,12 @@ chezmoi init --apply git@github.com:yutarody/dotfiles.git
 ```
 
 適用される主な設定:
-- `~/.zshrc` / `~/.zprofile`
+- `~/.zshrc`
 - `~/.gitconfig`
 - `~/.ssh/config`
 - starship, zoxide, fzf 等の設定
+
+> `~/.zprofile` は chezmoi 管理外。Homebrew インストール時に setup.sh が `brew shellenv` を追記する。
 
 ---
 
