@@ -20,6 +20,9 @@ git clone https://github.com/yutarody/provi-osx.git ~/dev/provi-osx
 bash ~/dev/provi-osx/setup.sh
 ```
 
+> 初回 `git` 実行時に **Command Line Developer Tools**（~1.5GB、git/clang/make 等）のインストールを求められる。  
+> これは **Homebrew でも必須**なので「インストール」を選択する（Xcode 本体 10GB+ ではない、別物）。
+
 途中から再開する場合:
 ```bash
 bash ~/dev/provi-osx/setup.sh --from 3  # Step 3 から再開
@@ -94,8 +97,8 @@ sudo /Applications/Install\ macOS\ Sequoia.app/Contents/Resources/createinstallm
 
 インストール後に起動するウィザード：
 
-1. **言語・地域・キーボード** → English / United States / US
-2. **Wi-Fi** → 接続する
+1. **言語・地域・キーボード** → 日本語 / 日本 / US
+2. **Wi-Fi** → インストール時に接続済みのためスキップ
 3. **移行アシスタント** → 「今は情報を転送しない」でスキップ
 4. **Apple ID** → サインイン（iCloud 有効化）
 5. **Touch ID** → 指紋を複数登録
@@ -124,16 +127,12 @@ sudo /Applications/Install\ macOS\ Sequoia.app/Contents/Resources/createinstallm
 ### 0-5. macOS デフォルト設定を一括適用
 
 ```bash
-# リポジトリを clone してから実行
 git clone https://github.com/yutarody/provi-osx.git ~/dev/provi-osx
 bash ~/dev/provi-osx/macos-defaults.sh
 ```
 
-または curl で直接実行（clone 不要）:
-```bash
-curl -fsSL https://raw.githubusercontent.com/yutarody/provi-osx/master/macos-defaults.sh | bash
-```
-
+> 初回 `git` 実行時に **Command Line Developer Tools**（~1.5GB）のインストールを求められる → 「インストール」を選択。  
+> Homebrew でも必須なので必ず入れる（フル Xcode の 10GB+ とは別物）。  
 > Finder の隠しファイル表示・Dock の挙動・キーリピート等が自動で設定される。  
 > その後 `bash ~/dev/provi-osx/setup.sh` でメインセットアップを開始。
 
