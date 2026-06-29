@@ -29,6 +29,9 @@ step()   { echo -e "\n${BOLD}${BLUE}━━━ $1 ━━━${NC}\n"; }
 manual() { echo -e "${YELLOW}[手動]${NC} $1"; }
 err()    { echo -e "${RED}[✗]${NC} $1"; }
 
+# 1Password SSH Agent socket（chezmoi 適用前でも SSH を使えるように明示）
+OP_SSH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
 # ============================================================
 # 引数処理
 # ============================================================
@@ -41,7 +44,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     --from)
       shift
-      FROM_STEP="${1:-0}"
+      if [[ $# -eq 0 || ! "${1:-}" =~ ^[0-9]+$ ]]; then
+        echo "エラー: --from には Step 番号（整数）を指定してください。例: --from 3" >&2
+        exit 1
+      fi
+      FROM_STEP="$1"
       # 指定ステップの一つ前まで完了済みとして進捗を設定
       echo "$((FROM_STEP - 1))" > "$PROGRESS_FILE"
       echo "Step $FROM_STEP から再開します。"
@@ -123,8 +130,20 @@ else
 
   # Apple Silicon: PATH を通す
   if [[ -f /opt/homebrew/bin/brew ]]; then
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+    # chezmoi が dot_zprofile を管理していない前提で append（重複防止）
+    if ! grep -q "brew shellenv" "$HOME/.zprofile" 2>/dev/null; then
+      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+    fi
     eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+
+  # Rosetta 2（Native Access 等 Intel バイナリのために必要）
+  if ! /usr/bin/pgrep -q oahd; then
+    info "Rosetta 2 をインストール中..."
+    softwareupdate --install-rosetta --agree-to-license || \
+      err "Rosetta 2 のインストールに失敗（後で手動: softwareupdate --install-rosetta）"
+  else
+    log "Rosetta 2 はインストール済み"
   fi
 
   set_progress 2
@@ -140,7 +159,7 @@ if completed_step 3; then
   log "スキップ（完了済み）"
 else
   # 1Password インストール
-  if ! brew list --cask 1password &>/dev/null 2>&1; then
+  if ! brew list --cask 1password &>/dev/null; then
     info "1Password をインストール中..."
     brew install --cask 1password
   else
@@ -158,11 +177,16 @@ else
   wait_confirm
 
   # SSH 接続テスト
+  # この時点で ~/.ssh/config はまだ chezmoi で配置されていないため、
+  # 1Password Agent のソケットを SSH_AUTH_SOCK で明示する
   info "GitHub SSH 接続テスト..."
-  if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+  ssh_output=$(SSH_AUTH_SOCK="$OP_SSH_SOCK" ssh -T -o StrictHostKeyChecking=accept-new git@github.com 2>&1 || true)
+  if echo "$ssh_output" | grep -q "successfully authenticated"; then
     log "SSH 接続成功"
   else
-    err "SSH 接続失敗 - 設定を確認してから Enter を押してください"
+    err "SSH 接続失敗:"
+    echo "$ssh_output" | sed 's/^/    /'
+    err "1Password の SSH Agent 設定 / GitHub への公開鍵登録を確認してから Enter を押してください"
     wait_confirm
   fi
 
@@ -171,7 +195,7 @@ else
 fi
 
 # ============================================================
-# Step 3: chezmoi で dotfiles を適用
+# Step 3: Brewfile で一括インストール
 # ============================================================
 step "Step 3: Brewfile で一括インストール"
 
@@ -184,8 +208,9 @@ else
   info "brew bundle を実行中（時間がかかります）..."
   # brew bundle は一部 cask の再インストールやライセンス都合で non-zero を返すことがある
   # その場合も継続して、ユーザーに最後に確認を促す
-  if ! brew bundle --file="$SCRIPT_DIR/Brewfile"; then
-    err "brew bundle で一部失敗しました。後で 'brew bundle --file=~/dev/provi-osx/Brewfile' を再実行してください"
+  # caffeinate でスリープを抑止
+  if ! caffeinate -i brew bundle --file="$SCRIPT_DIR/Brewfile"; then
+    err "brew bundle で一部失敗しました。後で 'brew bundle --file=$SCRIPT_DIR/Brewfile' を再実行してください"
     read -rp "  続行しますか？ [Y/n]: " ans
     [[ "$ans" == "n" || "$ans" == "N" ]] && exit 1
   fi
@@ -203,8 +228,9 @@ if completed_step 5; then
   log "スキップ（完了済み）"
 else
   # chezmoi は Brewfile に含まれているので Step 3 でインストール済み
+  # ~/.ssh/config はこのコマンドで配置されるため、それまでは 1Password Agent ソケットを明示
   info "dotfiles を適用中..."
-  chezmoi init --apply git@github.com:yutarody/dotfiles.git
+  SSH_AUTH_SOCK="$OP_SSH_SOCK" chezmoi init --apply git@github.com:yutarody/dotfiles.git
 
   set_progress 5
   log "完了"
@@ -222,6 +248,8 @@ else
     info "Node.js LTS をインストール中..."
     eval "$(fnm env)"
     fnm install --lts
+    fnm use --lts
+    # この時点で fnm current は実バージョン（例: v20.x.x）を返す
     fnm default "$(fnm current)"
     log "Node.js $(node -v) をインストール完了"
 
@@ -281,11 +309,11 @@ else
   echo ""
   read -rp "  スキップする場合は [s]、完了したら [Enter]: " ans
   if [[ "$ans" == "s" ]]; then
-    info "スキップ（後で実施してください）"
+    info "スキップ（後で --from 7 で再実行可能）"
+  else
+    set_progress 8
+    log "完了"
   fi
-
-  set_progress 8
-  log "完了"
 fi
 
 # ============================================================
@@ -296,17 +324,21 @@ step "Step 8: Parallels イメージのコピー"
 if completed_step 9; then
   log "スキップ（完了済み）"
 else
-  manual "旧 Mac の ~/Parallels/ を外付けSSD からコピーしてください："
-  manual "  cp -R /Volumes/外付けSSD名/Parallels/ ~/Parallels/"
-  manual "コピー後、Parallels を起動して .pvm ファイルを開く"
+  manual "Parallels VM イメージは外付けSSD（TB4）上に保管します："
+  manual "  1. 旧 Mac から外付けSSD の /Volumes/<外付けSSD名>/Parallels/ に .pvm をコピー済みであることを確認"
+  manual "  2. Parallels Desktop を起動 → ライセンス認証"
+  manual "  3. ファイル → 開く → /Volumes/<外付けSSD名>/Parallels/<VM>.pvm を選択"
+  manual "  4. VM 設定 → 「移動しました」を選択（コピーではなく）"
+  manual ""
+  manual "※ 内蔵 SSD には移動しないこと（外付けSSDで運用）"
   echo ""
   read -rp "  スキップする場合は [s]、完了したら [Enter]: " ans
   if [[ "$ans" == "s" ]]; then
-    info "スキップ"
+    info "スキップ（後で --from 8 で再実行可能）"
+  else
+    set_progress 9
+    log "完了"
   fi
-
-  set_progress 9
-  log "完了"
 fi
 
 # ============================================================

@@ -10,7 +10,8 @@
 #   bash macos-defaults.sh
 # ============================================================
 
-set -e
+# set -e は使わない: defaults write が単発失敗してもスクリプト全体は継続させる
+set -uo pipefail
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'

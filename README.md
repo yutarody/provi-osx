@@ -70,7 +70,7 @@ bash ~/dev/provi-osx/setup.sh --reset   # 進捗リセット
 
 **トラックパッド**
 - システム設定 → トラックパッド → 軌跡の速さを好みに調整
-- 「タップでクリック」を有効化（`macos-defaults.sh` でも設定されるが念のため確認）
+- 「タップでクリック」を好みで有効化
 
 **キーボード**
 - システム設定 → キーボード → キーのリピート速度・リピート入力認識までの時間を最速に
@@ -174,7 +174,7 @@ brew bundle --file=~/dev/provi-osx/Brewfile
 - 開発ツール（Warp, VS Code, Cursor, Claude, Claude Code 等）
 - 生産性ツール（1Password, Alfred, BetterTouchTool, Karabiner 等）
 - DAW・音楽ツール（Ableton Live, Cycling74 Max, Native Access 等）
-- Mac App Store アプリ（Magnet, Xcode, LINE 等）
+- Mac App Store アプリ（Magnet, LINE, Reeder 等）
 
 > **事前に App Store にサインインしておくこと**（mas のインストールに必要）
 

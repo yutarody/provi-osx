@@ -1,8 +1,8 @@
 # =====================
 # Taps
 # =====================
-tap "homebrew/cask-fonts"
-tap "rcmdnk/file"
+# homebrew/cask-fonts は 2024年に廃止され、font-* casks は本体 homebrew/cask に統合された
+# rcmdnk/file (brew-file) は使用していない（brew bundle で代替）ため削除
 
 # =====================
 # CLI Tools
