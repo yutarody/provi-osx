@@ -156,27 +156,66 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ## 2. 1Password のインストールと SSH Agent 設定
 
+### 2-1. インストール
+
 ```bash
 brew install --cask 1password
 ```
 
-インストール後:
-1. **1Password → 設定 → 開発者** を開く
-2. 「SSH Agentを使用」を有効化
-3. 1Password で GitHub 用 SSH 鍵を作成
-4. GitHub に公開鍵を登録:  
-   → [github.com/settings/keys](https://github.com/settings/keys)
+### 2-2. SSH Agent を有効化
 
-接続テスト:
+1. **1Password アプリを起動** → サインイン
+2. **左上メニュー** → 「1Password」→ 「設定」
+3. 左サイドバーで **「開発者」** をクリック
+4. **「SSH Agent を使用」** の切り替えを **ON**
+5. 「SSH 公開鍵の表示を許可」も **ON** にする（必須）
+6. 「SSH Agent のソケットを使用」が表示されたら確認（パス: `~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`）
+
+### 2-3. SSH 鍵を新規作成（1Password 側）
+
+1. 1Password アプリ内で **「+」（新規）** をクリック
+2. 「SSH キー」を選択（または「セキュアノート」→「SSH キー」テンプレート）
+3. **タイトル**: `GitHub` または `github-personal`
+4. **用途**: ドロップダウンから「GitHub」を選択（またはカスタマイズ）
+5. 「生成」ボタンをクリック → SSH キーペア（秘密鍵・公開鍵）が自動生成される
+6. **保存**
+
+> ⚠️ 秘密鍵は 1Password 内に自動保存される。ローカルファイル（`~/.ssh/id_rsa` 等）は作られない。
+
+### 2-4. GitHub に公開鍵を登録
+
+1. 1Password で作成した **SSH キー** を開く
+2. **公開鍵をコピー**（右クリック → コピー、または長押し）
+3. ブラウザで **[github.com/settings/keys](https://github.com/settings/keys)** を開く
+4. **「New SSH key」** をクリック
+5. **Title**: `M4 MacBook Pro` または任意の名前
+6. **Key type**: `Authentication Key` を選択
+7. **Key** フィールドに公開鍵をペースト
+8. **「Add SSH key」** をクリック
+9. GitHub でパスワード再認証を求められたら入力
+
+### 2-5. SSH 接続テスト
+
 ```bash
 ssh -T git@github.com
 ```
 
-chezmoi で管理している `~/.ssh/config` に以下が含まれる（自動適用）:
+正常なら以下が返る：
 ```
-Host *
-  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+Hi <your-username>! You've successfully authenticated, but GitHub does not provide shell access.
 ```
+
+> `~/.ssh/config` は chezmoi で自動管理される（Step 4）。  
+> 以下が含まれ、1Password Agent のソケットが自動指定される：
+> ```
+> Host *
+>   IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+> ```
+
+### 参考
+
+- [1Password SSH Agent ドキュメント](https://developer.1password.com/docs/ssh/)
+- [1Password で SSH 鍵を生成・管理](https://support.1password.com/ssh-keys/)
 
 ---
 
